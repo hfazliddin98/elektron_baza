@@ -36,11 +36,36 @@ copy .env.example .env       # Windows (Linux/Mac: cp)
 python manage.py migrate
 python manage.py createsuperuser
 
+# Namunaviy ma'lumotlar (ixtiyoriy, faqat ishlab chiqish uchun)
+python manage.py namuna
+
 # Ishga tushirish
 python manage.py runserver
 ```
 
 Sayt: http://127.0.0.1:8000/ · Admin panel: http://127.0.0.1:8000/admin/
+
+`namuna` buyrug'i test uchun foydalanuvchilar yaratadi (**faqat dev muhitida ishlating**):
+`admin/admin123`, `operator/operator123`, `rahbar/rahbar123`, `usta1..4/usta123`, `xodim1..6/xodim123`.
+
+## Rollar
+
+| Rol | Huquqlari |
+|-----|-----------|
+| Admin | hamma narsa + o'zi-ta'mir hisobotlarini tasdiqlash, amallar tarixi |
+| Operator | murojaatlarni qabul/rad qilish, shoshilinch ta'mirni biriktirish, topshirish |
+| Usta | navbatdan ish olish, o'z ta'mirlarini yuritish |
+| Xodim | murojaat yuborish, holatini kuzatish, baholash, o'zi ta'mirlaganini kiritish |
+| Rahbariyat | faqat hisobotlarni ko'rish |
+
+View'ga ruxsat qo'yish: `@rol_kerak(ADMIN, OPERATOR)` (`accounts/permissions.py`).
+Muhim amallarni tarixga yozish: `amal_yoz(user, AmalTarixi.Amal.TASDIQLASH, obyekt=..., request=request)`.
+
+## Testlar
+
+```bash
+python manage.py test
+```
 
 ## Loyiha tuzilishi
 

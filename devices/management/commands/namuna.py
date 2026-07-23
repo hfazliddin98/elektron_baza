@@ -35,6 +35,14 @@ class Command(BaseCommand):
             operator.set_password('operator123')
             operator.save()
 
+        rahbar, yaratildi = User.objects.get_or_create(
+            username='rahbar',
+            defaults={'rol': User.Rol.RAHBARIYAT, 'first_name': 'Shuhrat', 'last_name': 'Abdullayev'},
+        )
+        if yaratildi:
+            rahbar.set_password('rahbar123')
+            rahbar.save()
+
         # --- Bo'limlar ---
         at_markazi = Bolim.objects.get_or_create(
             nomi='Axborot texnologiyalari markazi', defaults={'bino': 'A bino', 'xona': '101'})[0]
@@ -175,4 +183,4 @@ class Command(BaseCommand):
             f"{TamirYozuvi.objects.count()} ta'mir yozuvi."
         ))
         self.stdout.write("Kirish (faqat dev): admin/admin123, operator/operator123, "
-                          "usta1..4/usta123, xodim1..6/xodim123")
+                          "rahbar/rahbar123, usta1..4/usta123, xodim1..6/xodim123")

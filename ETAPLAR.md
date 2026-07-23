@@ -22,7 +22,7 @@
 | 2 | Loyihalash (ERD, arxitektura) | 1 hafta | Baza sxemasi, sahifa eskizlari | ⬜ Boshlanmagan |
 | 3 | Muhitni tayyorlash | 2–3 kun | Django skelet loyiha | ✅ Tugagan |
 | 4 | Modellar va admin panel | 1 hafta | Baza jadvallari, admin | ✅ Tugagan |
-| 5 | Autentifikatsiya va rollar | 1 hafta | Login, 5 xil rol | ⬜ Boshlanmagan |
+| 5 | Autentifikatsiya va rollar | 1 hafta | Login, 5 xil rol | ✅ Tugagan |
 | 6 | Qurilmalar moduli | 1 hafta | Reestr + Excel import + QR-kod | ⬜ Boshlanmagan |
 | 7 | Murojaatlar moduli | 1 hafta | Elektron murojaat + o'zi ta'mirlash + tasdiqlash | ⬜ Boshlanmagan |
 | 8 | Ta'mirlash moduli | 2 hafta | Navbat, workflow, SLA | ⬜ Boshlanmagan |
@@ -153,15 +153,21 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 | **Rahbariyat** | faqat hisobotlarni ko'rish |
 
 **Vazifalar:**
-- [ ] Login / logout sahifalari
-- [ ] Rollar: `accounts.User.rol` maydoni asosida (model 4-bosqichda yaratilgan) ruxsatlarni ulash
-- [ ] Har bir view'da rol tekshiruvi (decorator/mixin)
-- [ ] Parolni o'zgartirish
-- [ ] Har bir amal tarixini saqlash (kim, qachon, nima qildi)
+- [x] Login / logout sahifalari (Bootstrap dizayn bilan)
+- [x] Rollar: `accounts.User.rol` maydoni asosida ruxsatlar ulandi
+- [x] Har bir view'da rol tekshiruvi — `accounts/permissions.py`: `@rol_kerak(ADMIN, OPERATOR)` dekoratori va `RolTalabMixin`; superuser hamma joyga kiradi; ruxsatsiz urinish tarixga yoziladi
+- [x] Parolni o'zgartirish sahifasi
+- [x] Har bir amal tarixini saqlash — `AmalTarixi` modeli + `amal_yoz()` yordamchisi; kirish/chiqish/xato parol signal orqali avtomatik yoziladi
+- [x] Rolga qarab o'zgaradigan panel (dashboard) va navbar
+- [x] Admin uchun amallar tarixi sahifasi (qidiruv, filtr, sahifalash)
+- [x] Testlar: 10 ta test (rollar, kirish/chiqish, parol, audit log) — hammasi o'tadi
 
 **Natija:** 5 rolli kirish tizimi.
 
 **Tugash mezoni:** har bir rol faqat o'z sahifalarini ko'radi; xodim boshqa xodimning murojaatini ko'ra olmaydi.
+
+> **Eslatma:** murojaat/ta'mir sahifalari qurilganda (7–8-bosqich) har bir view'ga `@rol_kerak(...)`
+> qo'yish va muhim amallardan keyin `amal_yoz(...)` chaqirish kerak.
 
 ---
 

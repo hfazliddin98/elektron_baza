@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Ruxsat yo'q — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 text-center">
+        <i class="bi bi-shield-lock text-danger" style="font-size: 3rem;"></i>
+        <h1 class="h4 mt-3">Ruxsat yo'q</h1>
+        <p class="text-muted">
+            Bu sahifa sizning rolingiz uchun ochiq emas.
+            Xato deb hisoblasangiz administratorga murojaat qiling.
+        </p>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Panelga qaytish</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Amal tarixi — Elektron Baza{% endblock %}
+
+{% block content %}
+<h1 class="h4 mb-3">Amallar tarixi</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="Login yoki obyekt bo'yicha qidirish">
+    </div>
+    <div class="col-md-3">
+        <select name="amal" class="form-select">
+            <option value="">— Barcha amallar —</option>
+            {% for qiymat, nom in amallar %}
+                <option value="{{ qiymat }}" {% if qiymat == tanlangan_amal %}selected{% endif %}>{{ nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-auto">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Qidirish</button>
+        <a href="{% url 'amal_tarixi' %}" class="btn btn-outline-secondary">Tozalash</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Sana</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Amal</th>
+                    <th>Obyekt</th>
+                    <th>Izoh</th>
+                    <th>IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for yozuv in sahifa %}
+                    <tr>
+                        <td class="text-nowrap small">{{ yozuv.sana|date:'d.m.Y H:i' }}</td>
+                        <td>
+                            {% if yozuv.user %}
+                                {{ yozuv.user.username }}
+                                <span class="badge text-bg-light">{{ yozuv.user.get_rol_display }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ yozuv.get_amal_display }}</td>
+                        <td class="small">{{ yozuv.obyekt|default:'—' }}</td>
+                        <td class="small text-muted">{{ yozuv.izoh|default:'' }}</td>
+                        <td class="small text-muted">{{ yozuv.ip|default:'—' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">Yozuv topilmadi.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if sahifa.has_other_pages %}
+    <nav class="mt-3">
+        <ul class="pagination pagination-sm justify-content-center mb-0">
+            {% if sahifa.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ sahifa.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if tanlangan_amal %}&amal={{ tanlangan_amal }}{% endif %}">Oldingi</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">{{ sahifa.number }} / {{ sahifa.paginator.num_pages }}</span>
+            </li>
+            {% if sahifa.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ sahifa.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if tanlangan_amal %}&amal={{ tanlangan_amal }}{% endif %}">Keyingi</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+{% endblock %}

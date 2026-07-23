@@ -21,17 +21,67 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarMenu">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Bosh sahifa</a></li>
-                <li class="nav-item"><a class="nav-link disabled" href="#">Qurilmalar</a></li>
-                <li class="nav-item"><a class="nav-link disabled" href="#">Murojaatlar</a></li>
-                <li class="nav-item"><a class="nav-link disabled" href="#">Ta'mirlar</a></li>
-                <li class="nav-item"><a class="nav-link disabled" href="#">Hisobotlar</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Panel</a></li>
+
+                    {% if user.is_admin or user.is_operator %}
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Qurilmalar</a></li>
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Murojaatlar</a></li>
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Ta'mirlar</a></li>
+                    {% endif %}
+
+                    {% if user.is_usta %}
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Navbat</a></li>
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Mening ta'mirlarim</a></li>
+                    {% endif %}
+
+                    {% if user.is_xodim %}
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Murojaat yuborish</a></li>
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Mening murojaatlarim</a></li>
+                    {% endif %}
+
+                    {% if user.is_admin or user.is_rahbariyat %}
+                        <li class="nav-item"><a class="nav-link disabled" href="#">Hisobotlar</a></li>
+                    {% endif %}
+
+                    {% if user.is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'amal_tarixi' %} active{% endif %}"
+                               href="{% url 'amal_tarixi' %}">Amal tarixi</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
             </ul>
+
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <li class="nav-item"><span class="navbar-text me-3"><i class="bi bi-person-circle"></i> {{ user.username }}</span></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            {{ user.get_full_name|default:user.username }}
+                            <span class="badge text-bg-light ms-1">{{ user.get_rol_display }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'parol_ozgartirish' %}">
+                                <i class="bi bi-key"></i> Parolni o'zgartirish</a></li>
+                            {% if user.is_staff %}
+                                <li><a class="dropdown-item" href="/admin/">
+                                    <i class="bi bi-gear"></i> Admin panel</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right"></i> Chiqish
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 {% else %}
-                    <li class="nav-item"><a class="nav-link" href="/admin/">Kirish</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">
+                        <i class="bi bi-box-arrow-in-right"></i> Kirish</a></li>
                 {% endif %}
             </ul>
         </div>

@@ -5,11 +5,13 @@
 {% block content %}
 <div class="p-4 p-md-5 mb-4 rounded-3 bg-white border">
     <h1 class="display-6 fw-bold">Elektron Baza</h1>
-    <p class="col-md-9 lead mb-0">
+    <p class="col-md-9 lead">
         Universitet elektron qurilmalarini ro'yxatga olish va ta'mirlash jarayonini
-        boshqarish tizimi. Loyiha skeleti tayyor — modullar bosqichma-bosqich qo'shiladi
-        (<code>ETAPLAR.md</code> ga qarang).
+        boshqarish tizimi. Murojaat yuborish va ta'mir holatini kuzatish uchun tizimga kiring.
     </p>
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+        <i class="bi bi-box-arrow-in-right"></i> Tizimga kirish
+    </a>
 </div>
 
 <div class="row g-3">

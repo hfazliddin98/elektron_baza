@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h4 mb-1">Salom, {{ user.get_full_name|default:user.username }}!</h1>
+        <p class="text-muted mb-0 small">
+            Rolingiz: <span class="badge text-bg-primary">{{ user.get_rol_display }}</span>
+        </p>
+    </div>
+</div>
+
+{% if user.is_admin or user.is_operator %}
+    <h2 class="h6 text-uppercase text-muted mb-3">Ta'mirlash holati</h2>
+    <div class="row g-3 mb-4">
+        {% include 'includes/stat_card.html' with nom='Yangi murojaatlar' qiymat=yangi_murojaatlar ikon='bi-envelope-exclamation' rang='warning' %}
+        {% include 'includes/stat_card.html' with nom='Navbatda' qiymat=navbatda ikon='bi-list-ol' rang='info' %}
+        {% include 'includes/stat_card.html' with nom="Ta'mirda" qiymat=tamirda ikon='bi-tools' rang='primary' %}
+        {% include 'includes/stat_card.html' with nom='Tayyor (topshirish kerak)' qiymat=tayyor ikon='bi-box-seam' rang='success' %}
+    </div>
+    <div class="row g-3 mb-4">
+        {% include 'includes/stat_card.html' with nom='Tasdiq kutmoqda' qiymat=tasdiq_kutmoqda ikon='bi-patch-check' rang='danger' %}
+        {% include 'includes/stat_card.html' with nom='Jami qurilmalar' qiymat=qurilmalar_soni ikon='bi-pc-display' rang='secondary' %}
+    </div>
+{% endif %}
+
+{% if user.is_usta %}
+    <h2 class="h6 text-uppercase text-muted mb-3">Mening ishlarim</h2>
+    {% if usta %}
+        <div class="row g-3 mb-4">
+            {% include 'includes/stat_card.html' with nom="Aktiv ta'mirlarim" qiymat=meniki_aktiv ikon='bi-tools' rang='primary' %}
+            {% include 'includes/stat_card.html' with nom='Tayyor (topshirilmagan)' qiymat=meniki_tayyor ikon='bi-box-seam' rang='success' %}
+            {% include 'includes/stat_card.html' with nom='Menga so\'ralgan' qiymat=menga_soralgan ikon='bi-person-check' rang='warning' %}
+            {% include 'includes/stat_card.html' with nom='Umumiy navbatda' qiymat=navbat ikon='bi-list-ol' rang='info' %}
+        </div>
+        <div class="alert alert-light border d-flex align-items-center">
+            <i class="bi bi-star-fill text-warning fs-4 me-3"></i>
+            <div>
+                <strong>O'rtacha bahoyingiz:</strong>
+                {% if reyting %}{{ reyting|floatformat:1 }} / 5{% else %}hali baho yo'q{% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Sizning hisobingiz usta yozuvi bilan bog'lanmagan. Administratorga murojaat qiling.
+        </div>
+    {% endif %}
+{% endif %}
+
+{% if user.is_xodim %}
+    <h2 class="h6 text-uppercase text-muted mb-3">Mening murojaatlarim</h2>
+    {% if xodim %}
+        <div class="row g-3 mb-4">
+            {% include 'includes/stat_card.html' with nom='Mening qurilmalarim' qiymat=mening_qurilmalarim ikon='bi-pc-display' rang='secondary' %}
+            {% include 'includes/stat_card.html' with nom='Jarayonda' qiymat=jarayonda ikon='bi-hourglass-split' rang='primary' %}
+            {% include 'includes/stat_card.html' with nom='Baholanmagan' qiymat=baholanmagan ikon='bi-star' rang='warning' %}
+            {% include 'includes/stat_card.html' with nom='Tasdiq kutmoqda' qiymat=ozi_tasdiq_kutmoqda ikon='bi-patch-check' rang='info' %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Sizning hisobingiz xodim yozuvi bilan bog'lanmagan. Administratorga murojaat qiling.
+        </div>
+    {% endif %}
+{% endif %}
+
+{% if user.is_rahbariyat or user.is_admin %}
+    <h2 class="h6 text-uppercase text-muted mb-3">Umumiy ko'rsatkichlar</h2>
+    <div class="row g-3 mb-4">
+        {% include 'includes/stat_card.html' with nom='Jami murojaatlar' qiymat=jami_murojaatlar ikon='bi-inboxes' rang='primary' %}
+        {% include 'includes/stat_card.html' with nom='Tugatilgan' qiymat=tugatilgan ikon='bi-check2-circle' rang='success' %}
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">O'rtacha baho</div>
+                        <div class="fs-3 fw-semibold">
+                            {% if ortacha_baho %}{{ ortacha_baho|floatformat:1 }}{% else %}—{% endif %}
+                        </div>
+                    </div>
+                    <i class="bi bi-star-fill fs-2 text-warning opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="alert alert-light border small text-muted mb-0">
+    <i class="bi bi-info-circle"></i>
+    Modullar bosqichma-bosqich ochilmoqda: qurilmalar (6-bosqich), murojaatlar (7-bosqich),
+    ta'mirlash (8-bosqich), hisobotlar (11-bosqich). Batafsil: <code>ETAPLAR.md</code>.
+</div>
+{% endblock %}
