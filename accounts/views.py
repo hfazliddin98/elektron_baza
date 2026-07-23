@@ -64,6 +64,7 @@ def dashboard(request):
                 turi=TamirYozuvi.Turi.OZI, tasdiq_holati=TamirYozuvi.Tasdiq.KUTILMOQDA,
             ).count(),
             qurilmalar_soni=Qurilma.objects.count(),
+            kechikkanlar=TamirYozuvi.objects.kechikkanlar().count(),
         )
 
     if user.is_usta:

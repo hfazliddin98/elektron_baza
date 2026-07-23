@@ -42,7 +42,16 @@
     </div>
     <div class="row g-3 mb-4">
         {% include 'includes/stat_card.html' with nom='Tasdiq kutmoqda' qiymat=tasdiq_kutmoqda ikon='bi-patch-check' rang='danger' %}
+        {% include 'includes/stat_card.html' with nom="Muddati o'tgan (SLA)" qiymat=kechikkanlar ikon='bi-clock-history' rang='danger' %}
         {% include 'includes/stat_card.html' with nom='Jami qurilmalar' qiymat=qurilmalar_soni ikon='bi-pc-display' rang='secondary' %}
+    </div>
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'murojaatlar_navbati' %}" class="btn btn-sm btn-outline-primary">Yangi murojaatlar</a>
+        <a href="{% url 'tamir_royxati' %}" class="btn btn-sm btn-outline-primary">Barcha ta'mirlar</a>
+        <a href="{% url 'tamir_royxati' %}?holat=kechikkan" class="btn btn-sm btn-outline-danger">Muddati o'tganlar</a>
+        {% if user.is_admin %}
+            <a href="{% url 'tasdiqlash_navbati' %}" class="btn btn-sm btn-outline-primary">Tasdiqlash navbati</a>
+        {% endif %}
     </div>
 {% endif %}
 
@@ -54,6 +63,10 @@
             {% include 'includes/stat_card.html' with nom='Tayyor (topshirilmagan)' qiymat=meniki_tayyor ikon='bi-box-seam' rang='success' %}
             {% include 'includes/stat_card.html' with nom='Menga so\'ralgan' qiymat=menga_soralgan ikon='bi-person-check' rang='warning' %}
             {% include 'includes/stat_card.html' with nom='Umumiy navbatda' qiymat=navbat ikon='bi-list-ol' rang='info' %}
+        </div>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="{% url 'navbat' %}" class="btn btn-sm btn-outline-primary">Navbatga o'tish</a>
+            <a href="{% url 'tamir_royxati' %}?mening=1" class="btn btn-sm btn-outline-primary">Mening ta'mirlarim</a>
         </div>
         <div class="alert alert-light border d-flex align-items-center">
             <i class="bi bi-star-fill text-warning fs-4 me-3"></i>
@@ -77,6 +90,15 @@
             {% include 'includes/stat_card.html' with nom='Jarayonda' qiymat=jarayonda ikon='bi-hourglass-split' rang='primary' %}
             {% include 'includes/stat_card.html' with nom='Baholanmagan' qiymat=baholanmagan ikon='bi-star' rang='warning' %}
             {% include 'includes/stat_card.html' with nom='Tasdiq kutmoqda' qiymat=ozi_tasdiq_kutmoqda ikon='bi-patch-check' rang='info' %}
+        </div>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a href="{% url 'murojaat_yangi' %}" class="btn btn-sm btn-primary">
+                <i class="bi bi-send"></i> Murojaat yuborish
+            </a>
+            <a href="{% url 'ozi_tamir_yangi' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-tools"></i> O'zim ta'mirladim
+            </a>
+            <a href="{% url 'tamir_royxati' %}" class="btn btn-sm btn-outline-primary">Mening murojaatlarim</a>
         </div>
     {% else %}
         <div class="alert alert-warning">

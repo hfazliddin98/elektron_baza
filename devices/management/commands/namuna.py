@@ -4,12 +4,41 @@ Qayta ishga tushirilsa mavjud yozuvlarni takrorlamaydi.
 DIQQAT: faqat ishlab chiqish muhiti uchun — parollar oddiy.
 """
 
+import random
+from datetime import timedelta
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils import timezone
 
 from accounts.models import User, Usta
 from devices.models import Bolim, Qurilma, Xodim
 from repairs.models import TamirYozuvi
+
+MUAMMOLAR = [
+    "Kompyuter yoqilmayapti, ko'k ekran chiqmoqda",
+    "Printer qog'oz tortmayapti",
+    "Monitor signal ko'rsatmayapti",
+    "Sichqoncha va klaviatura ishlamayapti",
+    "Proyektor lampasi xira yonmoqda",
+    "Tizim juda sekin ishlayapti",
+    "MFU skanerlash rejimida xato bermoqda",
+    "Ovoz chiqmayapti",
+    "Internet kabeli ulanmayapti",
+    "Kartrij siyoh oqizmoqda",
+]
+
+ISHLAR = [
+    'Ehtiyot qism almashtirildi, tizim tozalandi.',
+    'Drayverlar qayta o\'rnatildi.',
+    'Kartrij almashtirildi, pechat boshi tozalandi.',
+    'Blok pitaniya almashtirildi.',
+    'Chang tozalandi, termopasta yangilandi.',
+    'Kabel almashtirildi.',
+]
+
+QISMLAR = ['Kartrij — 1 dona', 'HDMI kabel — 1 dona', 'Blok pitaniya — 1 dona',
+           'Termopasta', 'Sichqoncha — 1 dona', '']
 
 
 class Command(BaseCommand):
@@ -17,6 +46,8 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        tasodif = random.Random(2026)  # har safar bir xil ma'lumot chiqishi uchun
+
         # --- Foydalanuvchilar ---
         admin, yaratildi = User.objects.get_or_create(
             username='admin',
@@ -37,7 +68,8 @@ class Command(BaseCommand):
 
         rahbar, yaratildi = User.objects.get_or_create(
             username='rahbar',
-            defaults={'rol': User.Rol.RAHBARIYAT, 'first_name': 'Shuhrat', 'last_name': 'Abdullayev'},
+            defaults={'rol': User.Rol.RAHBARIYAT, 'first_name': 'Shuhrat',
+                      'last_name': 'Abdullayev'},
         )
         if yaratildi:
             rahbar.set_password('rahbar123')
@@ -122,60 +154,7 @@ class Command(BaseCommand):
 
         # --- Ta'mir yozuvlari (faqat birinchi ishga tushirishda) ---
         if not TamirYozuvi.objects.exists():
-            # 1. Yangi murojaat (saytdan)
-            TamirYozuvi.objects.create(
-                qurilma=qurilmalar['UNI-0004'], xodim=xodimlar['Yusupova Malika'],
-                manba=TamirYozuvi.Manba.SAYT,
-                muammo_tavsifi="Printer qog'oz tortmayapti, chirillagan ovoz chiqaryapti.",
-            )
-
-            # 2. Navbatda (botdan, xodim ustani o'zi tanlagan)
-            t2 = TamirYozuvi.objects.create(
-                qurilma=qurilmalar['UNI-0007'], xodim=xodimlar['Hamidov Otabek'],
-                manba=TamirYozuvi.Manba.BOT,
-                tanlangan_usta=ustalar['Karimov Anvar'],
-                muammo_tavsifi="Kompyuter juda sekin ishlayapti, ba'zida o'zi o'chib qoladi.",
-            )
-            t2.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
-
-            # 3. Ta'mirda (shoshilinch, usta olgan)
-            t3 = TamirYozuvi.objects.create(
-                qurilma=qurilmalar['UNI-0006'], xodim=xodimlar["Nazarov Ulug'bek"],
-                muhimlik=TamirYozuvi.Muhimlik.SHOSHILINCH,
-                muammo_tavsifi="Proyektor dars vaqtida o'chib qoldi, umuman yonmayapti.",
-            )
-            t3.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
-            t3.usta = ustalar['Rahimov Bekzod']
-            t3.holat_ozgartir(TamirYozuvi.Holat.TASHXIS, user=ustalar['Rahimov Bekzod'].user)
-            t3.holat_ozgartir(TamirYozuvi.Holat.TAMIRDA, user=ustalar['Rahimov Bekzod'].user)
-
-            # 4. Topshirilgan va baholangan
-            t4 = TamirYozuvi.objects.create(
-                qurilma=qurilmalar['UNI-0010'], xodim=xodimlar['Saidova Gulnora'],
-                muammo_tavsifi='Printer kartriji siyoh oqizyapti, chop etganda dog\' qoladi.',
-            )
-            t4.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
-            t4.usta = ustalar['Tosheva Nilufar']
-            t4.holat_ozgartir(TamirYozuvi.Holat.TASHXIS, user=ustalar['Tosheva Nilufar'].user)
-            t4.holat_ozgartir(TamirYozuvi.Holat.TAMIRDA, user=ustalar['Tosheva Nilufar'].user)
-            t4.bajarilgan_ishlar = 'Kartrij almashtirildi, pechat boshi tozalandi.'
-            t4.ehtiyot_qismlar = 'Epson 003 kartrij — 1 dona'
-            t4.xarajat = 150000
-            t4.holat_ozgartir(TamirYozuvi.Holat.TAYYOR, user=ustalar['Tosheva Nilufar'].user)
-            t4.holat_ozgartir(TamirYozuvi.Holat.TOPSHIRILDI, user=operator)
-            t4.baho = 5
-            t4.baho_izoh = 'Tez va sifatli ta\'mirlandi, rahmat!'
-            t4.save()
-
-            # 5. O'zi ta'mirlagan (tasdiq kutilmoqda)
-            TamirYozuvi.objects.create(
-                qurilma=qurilmalar['UNI-0003'], xodim=xodimlar['Qodirov Jasur'],
-                turi=TamirYozuvi.Turi.OZI, manba=TamirYozuvi.Manba.SAYT,
-                muammo_tavsifi='Monitor signal yo\'qotib qolgan edi.',
-                bajarilgan_ishlar='HDMI kabel yaroqsiz chiqdi, yangisiga almashtirdim.',
-                ehtiyot_qismlar='HDMI kabel 1.5m — 1 dona',
-                xarajat=40000,
-            )
+            self._tamirlar_yarat(tasodif, qurilmalar, xodimlar, ustalar, operator, admin)
 
         self.stdout.write(self.style.SUCCESS(
             f"Tayyor: {Bolim.objects.count()} bo'lim, {Xodim.objects.count()} xodim, "
@@ -184,3 +163,100 @@ class Command(BaseCommand):
         ))
         self.stdout.write("Kirish (faqat dev): admin/admin123, operator/operator123, "
                           "rahbar/rahbar123, usta1..4/usta123, xodim1..6/xodim123")
+
+    def _tamirlar_yarat(self, tasodif, qurilmalar, xodimlar, ustalar, operator, admin):
+        """Oxirgi 12 oy uchun turli holatdagi ta'mirlar (hisobotlarni ko'rish uchun)."""
+        endi = timezone.now()
+        qurilma_royxati = list(qurilmalar.values())
+        xodim_royxati = list(xodimlar.values())
+        usta_royxati = list(ustalar.values())
+
+        # 1. Tugallangan va baholangan ta'mirlar — oxirgi 12 oyga taqsimlangan
+        for i in range(30):
+            kun_oldin = tasodif.randint(10, 360)
+            qurilma = tasodif.choice(qurilma_royxati)
+            xodim = qurilma.xodim or tasodif.choice(xodim_royxati)
+            usta = tasodif.choice(usta_royxati)
+
+            tamir = TamirYozuvi.objects.create(
+                qurilma=qurilma, xodim=xodim,
+                manba=tasodif.choice([TamirYozuvi.Manba.SAYT, TamirYozuvi.Manba.BOT,
+                                      TamirYozuvi.Manba.OPERATOR]),
+                muhimlik=(TamirYozuvi.Muhimlik.SHOSHILINCH if tasodif.random() < 0.2
+                          else TamirYozuvi.Muhimlik.ODDIY),
+                muammo_tavsifi=tasodif.choice(MUAMMOLAR),
+            )
+            tamir.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
+            tamir.holat_ozgartir(TamirYozuvi.Holat.TASHXIS, user=usta.user, usta=usta)
+            tamir.holat_ozgartir(TamirYozuvi.Holat.TAMIRDA, user=usta.user)
+            tamir.bajarilgan_ishlar = tasodif.choice(ISHLAR)
+            tamir.ehtiyot_qismlar = tasodif.choice(QISMLAR)
+            tamir.xarajat = tasodif.choice([0, 40000, 85000, 150000, 220000, 310000])
+            tamir.holat_ozgartir(TamirYozuvi.Holat.TAYYOR, user=usta.user)
+            tamir.holat_ozgartir(TamirYozuvi.Holat.TOPSHIRILDI, user=operator)
+
+            boshlanish = endi - timedelta(days=kun_oldin)
+            tugash = boshlanish + timedelta(days=tasodif.randint(1, 6))
+            TamirYozuvi.objects.filter(pk=tamir.pk).update(
+                qabul_sana=boshlanish,
+                navbatga_tushgan=boshlanish,
+                boshlangan_sana=boshlanish + timedelta(hours=6),
+                tugagan_sana=tugash,
+                topshirilgan_sana=tugash,
+                holat_sana=tugash,
+                baho=tasodif.choices([5, 4, 3, 2], weights=[55, 30, 10, 5])[0],
+                baho_sana=tugash,
+                baho_izoh=tasodif.choice(['Rahmat, tez ishladingiz!', '', 'Yaxshi', '']),
+            )
+
+        # 2. Jarayondagi ta'mirlar
+        yangi = TamirYozuvi.objects.create(
+            qurilma=qurilmalar['UNI-0004'], xodim=xodimlar['Yusupova Malika'],
+            manba=TamirYozuvi.Manba.SAYT,
+            muammo_tavsifi="Printer qog'oz tortmayapti, chirillagan ovoz chiqaryapti.",
+        )
+
+        navbatda = TamirYozuvi.objects.create(
+            qurilma=qurilmalar['UNI-0007'], xodim=xodimlar['Hamidov Otabek'],
+            manba=TamirYozuvi.Manba.BOT, tanlangan_usta=ustalar['Karimov Anvar'],
+            muammo_tavsifi="Kompyuter juda sekin ishlayapti, ba'zida o'zi o'chib qoladi.",
+        )
+        navbatda.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
+
+        erkin = TamirYozuvi.objects.create(
+            qurilma=qurilmalar['UNI-0009'], xodim=xodimlar['Ismoilova Dilnoza'],
+            manba=TamirYozuvi.Manba.SAYT,
+            muammo_tavsifi='Skaner kompyuterga ulanmayapti.',
+        )
+        erkin.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
+
+        tamirda = TamirYozuvi.objects.create(
+            qurilma=qurilmalar['UNI-0006'], xodim=xodimlar["Nazarov Ulug'bek"],
+            muhimlik=TamirYozuvi.Muhimlik.SHOSHILINCH,
+            muammo_tavsifi="Proyektor dars vaqtida o'chib qoldi, umuman yonmayapti.",
+        )
+        tamirda.holat_ozgartir(TamirYozuvi.Holat.QABUL, user=operator)
+        tamirda.holat_ozgartir(TamirYozuvi.Holat.TASHXIS, user=ustalar['Rahimov Bekzod'].user,
+                               usta=ustalar['Rahimov Bekzod'])
+        tamirda.holat_ozgartir(TamirYozuvi.Holat.TAMIRDA, user=ustalar['Rahimov Bekzod'].user)
+
+        # 3. O'zi ta'mirlagan — biri tasdiq kutmoqda, biri tasdiqlangan
+        TamirYozuvi.objects.create(
+            qurilma=qurilmalar['UNI-0003'], xodim=xodimlar['Qodirov Jasur'],
+            turi=TamirYozuvi.Turi.OZI, manba=TamirYozuvi.Manba.SAYT,
+            muammo_tavsifi="Monitor signal yo'qotib qolgan edi.",
+            bajarilgan_ishlar='HDMI kabel yaroqsiz chiqdi, yangisiga almashtirdim.',
+            ehtiyot_qismlar='HDMI kabel 1.5m — 1 dona', xarajat=40000,
+        )
+
+        tasdiqlangan = TamirYozuvi.objects.create(
+            qurilma=qurilmalar['UNI-0011'], xodim=xodimlar["Nazarov Ulug'bek"],
+            turi=TamirYozuvi.Turi.OZI, manba=TamirYozuvi.Manba.SAYT,
+            muammo_tavsifi='Monitor kabeli bo\'shab qolgan edi.',
+            bajarilgan_ishlar='Kabelni qayta uladim, mahkamladim.', xarajat=0,
+        )
+        tasdiqlangan.tasdiq_holati = TamirYozuvi.Tasdiq.TASDIQLANDI
+        tasdiqlangan.tasdiqlagan = admin
+        tasdiqlangan.tasdiq_sana = timezone.now()
+        tasdiqlangan._ozgartirgan_user = admin
+        tasdiqlangan.save()

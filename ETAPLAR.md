@@ -24,15 +24,15 @@
 | 4 | Modellar va admin panel | 1 hafta | Baza jadvallari, admin | ✅ Tugagan |
 | 5 | Autentifikatsiya va rollar | 1 hafta | Login, 5 xil rol | ✅ Tugagan |
 | 6 | Qurilmalar moduli | 1 hafta | Reestr + Excel import + QR-kod | ✅ Tugagan |
-| 7 | Murojaatlar moduli | 1 hafta | Elektron murojaat + o'zi ta'mirlash + tasdiqlash | ⬜ Boshlanmagan |
-| 8 | Ta'mirlash moduli | 2 hafta | Navbat, workflow, SLA | ⬜ Boshlanmagan |
-| 🚀 | **MVP — birinchi ishga tushirish** | 8-bosqichdan keyin | Tizim real foydalanishda | ⬜ Boshlanmagan |
-| 9 | Baholash mexanizmi | 3–4 kun | 1–5 baho, ustalar reytingi | ⬜ Boshlanmagan |
-| 10 | Telegram bot | 2 hafta | Bot: murojaat, xabarnoma, baho | ⬜ Boshlanmagan |
-| 11 | Hisobotlar moduli | 1 hafta | Oylik/yillik hisobot, Excel/PDF | ⬜ Boshlanmagan |
-| 12 | Testlash | 1 hafta | Barqaror versiya | ⬜ Boshlanmagan |
-| 13 | Deploy va topshirish | 3–4 kun | Serverda ishlayotgan tizim + bot | ⬜ Boshlanmagan |
-| 14 | Qo'llab-quvvatlash | doimiy | Backup, yangilanishlar | ⬜ Boshlanmagan |
+| 7 | Murojaatlar moduli | 1 hafta | Elektron murojaat + o'zi ta'mirlash + tasdiqlash | ✅ Tugagan |
+| 8 | Ta'mirlash moduli | 2 hafta | Navbat, workflow, SLA | ✅ Tugagan |
+| 🚀 | **MVP — birinchi ishga tushirish** | 8-bosqichdan keyin | Tizim real foydalanishda | 🟨 Sinovga tayyor |
+| 9 | Baholash mexanizmi | 3–4 kun | 1–5 baho, ustalar reytingi | ✅ Tugagan |
+| 10 | Telegram bot | 2 hafta | Bot: murojaat, xabarnoma, baho | ✅ Tugagan |
+| 11 | Hisobotlar moduli | 1 hafta | Oylik/yillik hisobot, Excel/PDF | ✅ Tugagan |
+| 12 | Testlash | 1 hafta | Barqaror versiya | ✅ Tugagan |
+| 13 | Deploy va topshirish | 3–4 kun | Serverda ishlayotgan tizim + bot | 🟨 Fayllar tayyor |
+| 14 | Qo'llab-quvvatlash | doimiy | Backup, yangilanishlar | 🟨 Yo'riqnoma tayyor |
 
 Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 
@@ -202,18 +202,19 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** xodimlar murojaatni tizim orqali yuborishi, o'zi ta'mirlaganini esa hisobot qilib kiritishi.
 
 **Vazifalar — elektron murojaat:**
-- [ ] Xodim kabineti: "Murojaat yuborish" formasi (o'ziga biriktirilgan qurilmani tanlaydi, muammo tavsifi, rasm biriktirish)
-- [ ] Formada **shoshilinchlik tanlovi** (oddiy / shoshilinch)
-- [ ] **Ixtiyoriy usta tanlash:** xodim xohlasa ro'yxatdan ustani tanlaydi (har ustaning reytingi va hozirgi ish yuki ko'rinib turadi); tanlamasa — umumiy navbat
-- [ ] "Mening murojaatlarim" sahifasi — har bir murojaat holatini kuzatish
-- [ ] Operator sahifasi: yangi murojaatlar navbati (shoshilinchlar tepada), qabul qilish / rad etish (rad sababi bilan)
-- [ ] Qabul qilinganda murojaat ta'mir navbatiga tushishi (8-bosqich bilan bog'lanadi)
+- [x] Xodim kabineti: "Murojaat yuborish" formasi (o'z bo'limi qurilmasini tanlaydi, muammo tavsifi, rasm biriktirish)
+- [x] Formada **shoshilinchlik tanlovi** (oddiy / shoshilinch)
+- [x] **Ixtiyoriy usta tanlash:** «Farqi yo'q» varianti bilan; tanlanmasa umumiy navbat
+- [x] "Mening murojaatlarim" sahifasi — har bir murojaat holatini kuzatish
+- [x] Operator sahifasi: yangi murojaatlar navbati (shoshilinchlar tepada), qabul qilish / rad etish (rad sababi majburiy)
+- [x] Qabul qilinganda murojaat ta'mir navbatiga tushishi
+- [x] QR skanerlanganda qurilma sahifasidan to'g'ridan-to'g'ri murojaat yuborish tugmasi
 
 **Vazifalar — o'zi ta'mirlash:**
-- [ ] "O'zim ta'mirladim" formasi: qurilma, nima buzilgan edi, nima qilindi, ehtiyot qism, xarajat
-- [ ] Yuborilganda holat: `Tasdiq kutilmoqda`
-- [ ] Admin tasdiqlash navbati sahifasi: ko'rib chiqish → **tasdiqlash / rad etish** (izoh bilan)
-- [ ] Tasdiqlangan yozuv qurilma tarixiga va hisobotlarga kirishi; rad etilgani sabab bilan xodimga ko'rinishi
+- [x] "O'zim ta'mirladim" formasi: qurilma, nima buzilgan edi, nima qilindi, ehtiyot qism, xarajat
+- [x] Yuborilganda holat: `Tasdiq kutilmoqda`
+- [x] Admin tasdiqlash navbati sahifasi: ko'rib chiqish → **tasdiqlash / rad etish** (rad etilsa izoh majburiy)
+- [x] Tasdiqlangan yozuv qurilma tarixiga va hisobotlarga kirishi; rad etilgani hisobotlarga kirmasligi (`hisobga_kiradi()` filtri)
 
 **Natija:** elektron murojaat qabul tizimi + tasdiqlanadigan o'zi-ta'mir hisobotlari.
 
@@ -256,17 +257,17 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 ```
 
 **Vazifalar:**
-- [ ] Operator uchun to'g'ridan-to'g'ri qabul formasi ham (xodim qurilmani o'zi olib kelgan holat uchun)
-- [ ] **Ustalar uchun "Navbat" sahifasi:** `Qabul qilindi` holatidagi **eng eski 10 ta** ta'mir ko'rinadi (shoshilinchlar tepada), "O'zimga olish" tugmasi
-- [ ] Bir ta'mirni faqat bitta usta olishi — ikki usta bir vaqtda bossa, birinchisiniki o'tadi (poyga holati tekshiruvi)
-- [ ] **"Menga so'ralgan ta'mirlar" bo'limi:** xodim shaxsan tanlagan ta'mirlar ustaning sahifasida alohida ko'rinadi — qabul qilish / rad etish tugmalari; rad etilsa yoki 1 ish kuni javob berilmasa avtomatik umumiy navbatga tushadi
-- [ ] Operator **shoshilinch** ta'mirni to'g'ridan-to'g'ri biriktira olishi; biriktirish oynasida **har ustaning hozirgi aktiv ta'mirlari soni** ko'rinishi (ish yuki)
-- [ ] Status o'zgartirish tugmalari (har rol o'ziga ruxsat berilganini); har o'zgarish `StatusTarix`ga yozilishi
-- [ ] **SLA nazorati:** statusda ruxsat etilgan muddatdan oshgan ta'mirlar ro'yxatda **qizil** ko'rinishi; adminga kunlik eslatma
-- [ ] **Qayta ta'mir:** topshirilgandan 30 kun ichida o'sha qurilma yana kelsa — avtomatik "qayta ta'mir" belgisi, oldingi ta'mirga bog'lanadi
-- [ ] Ta'mir boshlanganda qurilma holati avtomatik "ta'mirda", topshirilganda "ishlamoqda"
-- [ ] Ustaning shaxsiy sahifasi: "Mening ta'mirlarim"
-- [ ] Dashboard: yangi murojaatlar, navbatda, ta'mirda, tayyor, tasdiq kutayotgan, **muddati o'tgan (SLA)** soni
+- [x] Operator uchun to'g'ridan-to'g'ri qabul formasi (xodim qurilmani o'zi olib kelgan holat uchun) — darhol navbatga tushadi
+- [x] **Ustalar uchun "Navbat" sahifasi:** `Qabul qilindi` holatidagi **eng eski 10 ta** ta'mir (shoshilinchlar tepada), "O'zimga olish" tugmasi
+- [x] Bir ta'mirni faqat bitta usta olishi — `select_for_update` bilan tranzaksiya ichida tekshiriladi (test bilan qamralgan)
+- [x] **"Sizdan so'ralgan ishlar" bo'limi:** qabul qilish / rad etish tugmalari; rad etilsa yoki 1 ish kuni javob berilmasa umumiy navbatga tushadi (kunlik buyruq ham, navbat so'rovi ham shu qoidaga bo'ysunadi)
+- [x] Operator **shoshilinch** ta'mirni to'g'ridan-to'g'ri biriktira olishi
+- [x] Status o'zgartirish tugmalari rol va holatga qarab ko'rinadi; har o'zgarish `StatusTarix`ga yoziladi
+- [x] **SLA nazorati:** har holat uchun muddat (`SLA_KUN`), muddati o'tganlar qizil belgi bilan; ro'yxatda «Muddati o'tganlar» filtri; adminga kunlik Telegram eslatmasi
+- [x] **Qayta ta'mir:** 30 kun ichida qaytgan qurilma avtomatik belgilanadi va oldingi ta'mirga bog'lanadi
+- [x] Ta'mir boshlanganda qurilma holati avtomatik "ta'mirda", topshirilganda "ishlamoqda"
+- [x] Ustaning shaxsiy sahifasi: "Mening ta'mirlarim"
+- [x] Dashboard: yangi murojaatlar, navbatda, ta'mirda, tayyor, tasdiq kutayotgan, **muddati o'tgan (SLA)** soni
 
 **Natija:** navbat va SLA nazorati bilan to'liq ishlaydigan ta'mirlash jarayoni.
 
@@ -295,14 +296,14 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** xodim ta'mir sifatini baholashi, ustalar reytingi shakllanishi.
 
 **Vazifalar:**
-- [ ] Qurilma "Topshirildi" bo'lgach xodimga baholash imkoniyati ochilishi (1–5 yulduz + ixtiyoriy izoh)
-- [ ] Baho faqat o'z murojaatiga va faqat bir marta berilishi
-- [ ] Saytda: "Mening murojaatlarim" sahifasida baholash tugmasi
-- [ ] **3 kun ichida baho qo'yilmasa** — bot orqali bir marta eslatma (10-bosqichda ulanadi)
-- [ ] **7 kundan keyin** bahosiz avtomatik yopilishi (hisobotda "baholanmagan" bo'lib ko'rinadi)
-- [ ] Usta profilida o'rtacha reyting ko'rinishi
-- [ ] Past baho (1–2) qo'yilsa adminga bildirishnoma
-- [ ] Baholar hisobotlarga ulanishi (11-bosqich)
+- [x] Qurilma "Topshirildi" bo'lgach xodimga baholash imkoniyati ochilishi (1–5 + ixtiyoriy izoh)
+- [x] Baho faqat o'z murojaatiga va faqat bir marta berilishi
+- [x] Saytda: ta'mir sahifasida baholash tugmasi (modal oyna)
+- [x] **3 kun ichida baho qo'yilmasa** — bot orqali bir marta eslatma (`kunlik_vazifalar`)
+- [x] **7 kundan keyin** bahosiz avtomatik yopilishi (`baho_yopilgan`, hisobotda "baholanmagan")
+- [x] Usta panelida o'rtacha reyting ko'rinishi
+- [x] Past baho (1–2) qo'yilsa adminlarga Telegram bildirishnomasi
+- [x] Baholar hisobotlarga ulanishi (11-bosqich)
 
 **Natija:** ishlaydigan baholash tizimi va ustalar reytingi.
 

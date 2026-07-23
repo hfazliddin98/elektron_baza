@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Navbat — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">Navbat</h1>
+    <span class="text-muted small">Navbatda jami {{ jami_navbatda }} ta ish</span>
+</div>
+
+{% if not usta and not user.is_admin %}
+    <div class="alert alert-warning">Hisobingiz usta yozuvi bilan bog'lanmagan.</div>
+{% endif %}
+
+{% if soralganlar %}
+    <h2 class="h6 text-uppercase text-muted mb-2">
+        <i class="bi bi-person-check"></i> Sizdan so'ralgan ishlar
+    </h2>
+    <p class="text-muted small">
+        Xodim aynan sizni tanlagan. Rad etsangiz ish umumiy navbatga qaytadi.
+    </p>
+    <div class="card shadow-sm mb-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr><th>#</th><th>Qurilma</th><th>Muammo</th><th>Xodim</th><th>Kutmoqda</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {% for tamir in soralganlar %}
+                        <tr>
+                            <td><a href="{{ tamir.get_absolute_url }}" class="fw-semibold text-decoration-none">#{{ tamir.pk }}</a>
+                                {% if tamir.muhimlik == 'shoshilinch' %}<span class="badge text-bg-danger">!</span>{% endif %}</td>
+                            <td class="small">{{ tamir.qurilma.inventar_raqami }}</td>
+                            <td class="small">{{ tamir.muammo_tavsifi|truncatechars:45 }}</td>
+                            <td class="small">{{ tamir.xodim.fio }}</td>
+                            <td class="small text-nowrap">{{ tamir.navbatga_tushgan|timesince }}</td>
+                            <td class="text-end text-nowrap">
+                                <form method="post" action="{% url 'ishni_olish' tamir.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-primary">Qabul qilish</button>
+                                </form>
+                                <form method="post" action="{% url 'soralganni_rad' tamir.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger">Rad etish</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+<h2 class="h6 text-uppercase text-muted mb-2">
+    <i class="bi bi-list-ol"></i> Umumiy navbat (eng eski {{ navbat_hajmi }} ta)
+</h2>
+<p class="text-muted small">
+    Shoshilinch ishlar tepada turadi. Ishni o'zingiz tanlab olasiz — majburiy biriktirilmaydi.
+</p>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>#</th><th>Qurilma</th><th>Muammo</th><th>Xodim</th><th>Navbatda</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for tamir in erkin %}
+                    <tr>
+                        <td><a href="{{ tamir.get_absolute_url }}" class="fw-semibold text-decoration-none">#{{ tamir.pk }}</a>
+                            {% if tamir.muhimlik == 'shoshilinch' %}<span class="badge text-bg-danger">shoshilinch</span>{% endif %}</td>
+                        <td class="small">{{ tamir.qurilma.inventar_raqami }}<br>
+                            <span class="text-muted">{{ tamir.qurilma.get_turi_display }}</span></td>
+                        <td class="small">{{ tamir.muammo_tavsifi|truncatechars:45 }}</td>
+                        <td class="small">{{ tamir.xodim.fio }}</td>
+                        <td class="small text-nowrap">
+                            {{ tamir.navbatga_tushgan|timesince }}
+                            {% if tamir.kechikkanmi %}
+                                <span class="badge text-bg-danger">kechikkan</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if user.is_usta %}
+                                <form method="post" action="{% url 'ishni_olish' tamir.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-primary">O'zimga olish</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">Navbat bo'sh.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

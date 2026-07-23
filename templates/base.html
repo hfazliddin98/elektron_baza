@@ -32,8 +32,20 @@
                     {% endif %}
 
                     {% if user.is_admin or user.is_operator %}
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Murojaatlar</a></li>
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Ta'mirlar</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'murojaatlar_navbati' %} active{% endif %}"
+                               href="{% url 'murojaatlar_navbati' %}">Murojaatlar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'tamir_royxati' %} active{% endif %}"
+                               href="{% url 'tamir_royxati' %}">Ta'mirlar</a>
+                        </li>
+                    {% endif %}
+                    {% if user.is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'tasdiqlash_navbati' %} active{% endif %}"
+                               href="{% url 'tasdiqlash_navbati' %}">Tasdiqlash</a>
+                        </li>
                     {% endif %}
 
                     {% if user.is_admin %}
@@ -51,8 +63,13 @@
                     {% endif %}
 
                     {% if user.is_usta %}
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Navbat</a></li>
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Mening ta'mirlarim</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'navbat' %} active{% endif %}"
+                               href="{% url 'navbat' %}">Navbat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tamir_royxati' %}?mening=1">Mening ta'mirlarim</a>
+                        </li>
                     {% endif %}
 
                     {% if user.is_xodim %}
@@ -60,8 +77,14 @@
                             <a class="nav-link{% if request.resolver_match.url_name == 'qurilma_royxati' %} active{% endif %}"
                                href="{% url 'qurilma_royxati' %}">Mening qurilmalarim</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Murojaat yuborish</a></li>
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Mening murojaatlarim</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'murojaat_yangi' %} active{% endif %}"
+                               href="{% url 'murojaat_yangi' %}">Murojaat yuborish</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'tamir_royxati' %} active{% endif %}"
+                               href="{% url 'tamir_royxati' %}">Mening murojaatlarim</a>
+                        </li>
                     {% endif %}
 
                     {% if user.is_admin or user.is_rahbariyat %}

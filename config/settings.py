@@ -146,3 +146,5 @@ MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 # Telegram bot (10-bosqichda ishlatiladi)
 
 BOT_TOKEN = os.getenv('BOT_TOKEN', '')
+BOT_ADMIN_CHAT = os.getenv('BOT_ADMIN_CHAT', '')   # operator/admin guruhi chat_id
+SAYT_MANZILI = os.getenv('SAYT_MANZILI', 'http://127.0.0.1:8000')

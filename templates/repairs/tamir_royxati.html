@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ sarlavha }} — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">{{ sarlavha }} <span class="text-muted fs-6">({{ jami }})</span></h1>
+    <div class="d-flex gap-2">
+        {% if user.is_xodim %}
+            <a href="{% url 'murojaat_yangi' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Murojaat yuborish
+            </a>
+            <a href="{% url 'ozi_tamir_yangi' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-tools"></i> O'zim ta'mirladim
+            </a>
+        {% endif %}
+        {% if user.is_admin or user.is_operator %}
+            <a href="{% url 'operator_murojaat' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Qabul qilish
+            </a>
+        {% endif %}
+        {% if user.is_usta %}
+            <a href="{% url 'navbat' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-list-ol"></i> Navbat
+            </a>
+            <a href="?mening=1" class="btn btn-outline-secondary btn-sm">Mening ta'mirlarim</a>
+        {% endif %}
+    </div>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    {% if request.GET.mening %}<input type="hidden" name="mening" value="1">{% endif %}
+    <div class="col-md-4">
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="Inventar raqam, xodim yoki muammo">
+    </div>
+    <div class="col-md-3">
+        <select name="holat" class="form-select">
+            <option value="">— Barcha holatlar —</option>
+            {% for qiymat, nom in holatlar %}
+                <option value="{{ qiymat }}" {% if qiymat == holat %}selected{% endif %}>{{ nom }}</option>
+            {% endfor %}
+            <option value="kechikkan" {% if holat == 'kechikkan' %}selected{% endif %}>⏰ Muddati o'tganlar</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="turi" class="form-select">
+            <option value="">— Turi —</option>
+            {% for qiymat, nom in turlar %}
+                <option value="{{ qiymat }}" {% if qiymat == turi %}selected{% endif %}>{{ nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="muhimlik" class="form-select">
+            <option value="">— Muhimlik —</option>
+            {% for qiymat, nom in muhimliklar %}
+                <option value="{{ qiymat }}" {% if qiymat == muhimlik %}selected{% endif %}>{{ nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-auto">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+        <a href="{% url 'tamir_royxati' %}" class="btn btn-outline-secondary">Tozalash</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Qurilma</th>
+                    <th>Muammo</th>
+                    <th>Xodim</th>
+                    <th>Usta</th>
+                    <th>Holat</th>
+                    <th>Sana</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tamir in sahifa %}
+                    <tr>
+                        <td>
+                            <a href="{{ tamir.get_absolute_url }}" class="fw-semibold text-decoration-none">
+                                #{{ tamir.pk }}</a>
+                            {% if tamir.muhimlik == 'shoshilinch' %}
+                                <span class="badge text-bg-danger">!</span>
+                            {% endif %}
+                        </td>
+                        <td class="small">{{ tamir.qurilma.inventar_raqami }}</td>
+                        <td class="small">{{ tamir.muammo_tavsifi|truncatechars:50 }}</td>
+                        <td class="small">{{ tamir.xodim.fio }}</td>
+                        <td class="small">{{ tamir.usta.fio|default:'—' }}</td>
+                        <td>
+                            <span class="badge text-bg-{{ tamir.holat_rangi }}">{{ tamir.holat_nomi }}</span>
+                            {% if tamir.kechikkanmi %}
+                                <span class="badge text-bg-danger" title="SLA muddati o'tgan">
+                                    <i class="bi bi-clock"></i> {{ tamir.kechikkan_kun }} kun
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="small text-nowrap">{{ tamir.qabul_sana|date:'d.m.Y' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">Yozuv topilmadi.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include 'includes/sahifalash.html' %}
+{% endblock %}

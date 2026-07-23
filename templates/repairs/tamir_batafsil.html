@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+{% block title %}Ta'mir #{{ tamir.pk }} — Elektron Baza{% endblock %}
+
+{% block content %}
+<nav class="mb-3">
+    <a href="{% url 'tamir_royxati' %}" class="text-decoration-none small">
+        <i class="bi bi-arrow-left"></i> Ro'yxatga qaytish
+    </a>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-wrap align-items-start justify-content-between mb-3">
+                    <div>
+                        <h1 class="h4 mb-1">
+                            Ta'mir #{{ tamir.pk }}
+                            {% if tamir.muhimlik == 'shoshilinch' %}
+                                <span class="badge text-bg-danger align-middle">shoshilinch</span>
+                            {% endif %}
+                            {% if tamir.qayta_tamir %}
+                                <span class="badge text-bg-danger align-middle" title="30 kun ichida qaytgan">
+                                    qayta ta'mir</span>
+                            {% endif %}
+                        </h1>
+                        <p class="text-muted mb-0">
+                            <a href="{{ tamir.qurilma.get_absolute_url }}" class="text-decoration-none">
+                                {{ tamir.qurilma.inventar_raqami }}</a>
+                            — {{ tamir.qurilma.get_turi_display }} {{ tamir.qurilma.modeli }}
+                        </p>
+                    </div>
+                    <span class="badge text-bg-{{ tamir.holat_rangi }} fs-6">{{ tamir.holat_nomi }}</span>
+                </div>
+
+                {% if tamir.kechikkanmi %}
+                    <div class="alert alert-danger py-2 small">
+                        <i class="bi bi-clock"></i>
+                        «{{ tamir.holat_nomi }}» holatida ruxsat etilgan {{ tamir.sla_kuni }} kundan
+                        {{ tamir.kechikkan_kun }} kun ortiq turibdi.
+                    </div>
+                {% endif %}
+
+                <dl class="row mb-0 small">
+                    <dt class="col-sm-4 text-muted fw-normal">Muammo</dt>
+                    <dd class="col-sm-8">{{ tamir.muammo_tavsifi|linebreaksbr }}</dd>
+
+                    <dt class="col-sm-4 text-muted fw-normal">Murojaat qilgan</dt>
+                    <dd class="col-sm-8">{{ tamir.xodim.fio }} ({{ tamir.xodim.bolim.nomi }})</dd>
+
+                    <dt class="col-sm-4 text-muted fw-normal">Manba</dt>
+                    <dd class="col-sm-8">{{ tamir.get_manba_display }} · {{ tamir.get_turi_display }}</dd>
+
+                    {% if not tamir.ozi_tamiri %}
+                        <dt class="col-sm-4 text-muted fw-normal">Usta</dt>
+                        <dd class="col-sm-8">
+                            {{ tamir.usta.fio|default:'— (hali olinmagan)' }}
+                            {% if tamir.tanlangan_usta %}
+                                <br><span class="text-muted">Xodim so'ragan usta: {{ tamir.tanlangan_usta.fio }}</span>
+                            {% endif %}
+                        </dd>
+                    {% endif %}
+
+                    <dt class="col-sm-4 text-muted fw-normal">Qabul sanasi</dt>
+                    <dd class="col-sm-8">{{ tamir.qabul_sana|date:'d.m.Y H:i' }}</dd>
+
+                    {% if tamir.topshirilgan_sana %}
+                        <dt class="col-sm-4 text-muted fw-normal">Topshirilgan</dt>
+                        <dd class="col-sm-8">
+                            {{ tamir.topshirilgan_sana|date:'d.m.Y H:i' }}
+                            <span class="text-muted">({{ tamir.tamir_muddati_kun }} kunda)</span>
+                        </dd>
+                    {% endif %}
+
+                    {% if tamir.bajarilgan_ishlar %}
+                        <dt class="col-sm-4 text-muted fw-normal">Bajarilgan ishlar</dt>
+                        <dd class="col-sm-8">{{ tamir.bajarilgan_ishlar|linebreaksbr }}</dd>
+                    {% endif %}
+                    {% if tamir.ehtiyot_qismlar %}
+                        <dt class="col-sm-4 text-muted fw-normal">Ehtiyot qismlar</dt>
+                        <dd class="col-sm-8">{{ tamir.ehtiyot_qismlar|linebreaksbr }}</dd>
+                    {% endif %}
+                    {% if tamir.xarajat %}
+                        <dt class="col-sm-4 text-muted fw-normal">Xarajat</dt>
+                        <dd class="col-sm-8">{{ tamir.xarajat|floatformat:0 }} so'm</dd>
+                    {% endif %}
+
+                    {% if tamir.rad_sababi %}
+                        <dt class="col-sm-4 text-muted fw-normal">Rad etish sababi</dt>
+                        <dd class="col-sm-8 text-danger">{{ tamir.rad_sababi }}</dd>
+                    {% endif %}
+                    {% if tamir.tasdiq_izohi %}
+                        <dt class="col-sm-4 text-muted fw-normal">Tasdiq izohi</dt>
+                        <dd class="col-sm-8">{{ tamir.tasdiq_izohi }}</dd>
+                    {% endif %}
+                </dl>
+
+                {% if tamir.rasm %}
+                    <div class="mt-3">
+                        <a href="{{ tamir.rasm.url }}" target="_blank">
+                            <img src="{{ tamir.rasm.url }}" alt="Muammo rasmi"
+                                 class="img-fluid rounded border" style="max-height: 260px;">
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# --- Amallar --- #}
+            <div class="card-footer bg-white d-flex flex-wrap gap-2">
+                {% if user.is_admin or user.is_operator %}
+                    {% if tamir.holat == 'yangi' %}
+                        <form method="post" action="{% url 'murojaat_qabul' tamir.pk %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-primary">
+                                <i class="bi bi-check-lg"></i> Qabul qilish
+                            </button>
+                        </form>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#radModal">
+                            <i class="bi bi-x-lg"></i> Rad etish
+                        </button>
+                    {% elif tamir.holat == 'qabul' %}
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#biriktirishModal">
+                            <i class="bi bi-person-plus"></i> Ustaga biriktirish
+                        </button>
+                        <span class="text-muted small align-self-center">
+                            (odatda usta navbatdan o'zi oladi — bu tugma shoshilinch holatlar uchun)
+                        </span>
+                    {% elif tamir.holat == 'tayyor' %}
+                        <form method="post" action="{% url 'topshirish' tamir.pk %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-success">
+                                <i class="bi bi-box-seam"></i> Xodimga topshirish
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+
+                {% if mening_ishim or user.is_admin %}
+                    {% if tamir.holat == 'tashxis' %}
+                        <form method="post" action="{% url 'ishni_boshlash' tamir.pk %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-primary">
+                                <i class="bi bi-play-fill"></i> Ta'mirni boshlash
+                            </button>
+                        </form>
+                    {% elif tamir.holat == 'tamirda' %}
+                        <button class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                data-bs-target="#yakunlashModal">
+                            <i class="bi bi-check2-all"></i> Ishni yakunlash
+                        </button>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.is_admin and tamir.ozi_tamiri and tamir.tasdiq_holati == 'kutilmoqda' %}
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tasdiqModal">
+                        <i class="bi bi-patch-check"></i> Ko'rib chiqish (tasdiqlash / rad etish)
+                    </button>
+                {% endif %}
+
+                {% if user.is_xodim and tamir.baho_kutilmoqda %}
+                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#bahoModal">
+                        <i class="bi bi-star"></i> Xizmatni baholash
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if tamir.baho %}
+            <div class="alert alert-light border d-flex align-items-center">
+                <div class="fs-4 text-warning me-3">
+                    {% for _ in "12345"|make_list %}{% endfor %}
+                    {{ tamir.baho }}<i class="bi bi-star-fill ms-1"></i>
+                </div>
+                <div class="small">
+                    <strong>Xodim bahosi:</strong> {{ tamir.baho }}/5
+                    {% if tamir.baho_izoh %}<br>{{ tamir.baho_izoh }}{% endif %}
+                </div>
+            </div>
+        {% elif tamir.baho_yopilgan %}
+            <div class="alert alert-light border small text-muted">
+                Baho berilmadi — muddat o'tgach avtomatik yopildi.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6 text-uppercase text-muted mb-3">Holatlar tarixi</h2>
+                <ul class="list-unstyled mb-0 small">
+                    {% for yozuv in tarix %}
+                        <li class="d-flex mb-3">
+                            <i class="bi bi-circle-fill text-primary me-2" style="font-size: 0.5rem; margin-top: 0.4rem;"></i>
+                            <div>
+                                <div class="fw-semibold">{{ yozuv.nomi }}</div>
+                                <div class="text-muted">
+                                    {{ yozuv.sana|date:'d.m.Y H:i' }}
+                                    {% if yozuv.ozgartirgan %}
+                                        · {{ yozuv.ozgartirgan.get_full_name|default:yozuv.ozgartirgan.username }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="text-muted">Tarix bo'sh.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Modallar --- #}
+{% if user.is_admin or user.is_operator %}
+    <div class="modal fade" id="radModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="post" action="{% url 'murojaat_rad' tamir.pk %}" class="modal-content">
+                {% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Murojaatni rad etish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">{% include 'includes/form.html' with form=rad_form %}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-danger">Rad etish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="biriktirishModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="post" action="{% url 'usta_biriktirish' tamir.pk %}" class="modal-content">
+                {% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Ustaga biriktirish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">{% include 'includes/form.html' with form=biriktirish_form %}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Biriktirish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{% if mening_ishim or user.is_admin %}
+    <div class="modal fade" id="yakunlashModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="post" action="{% url 'ishni_yakunlash' tamir.pk %}" class="modal-content">
+                {% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Ishni yakunlash</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">{% include 'includes/form.html' with form=yakunlash_form %}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-success">Yakunlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{% if user.is_admin and tamir.ozi_tamiri %}
+    <div class="modal fade" id="tasdiqModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="post" action="{% url 'tasdiq_qarori' tamir.pk %}" class="modal-content">
+                {% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Hisobotni ko'rib chiqish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">{% include 'includes/form.html' with form=tasdiq_form %}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{% if user.is_xodim %}
+    <div class="modal fade" id="bahoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="post" action="{% url 'baho_berish' tamir.pk %}" class="modal-content">
+                {% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Xizmatni baholang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">{% include 'includes/form.html' with form=baho_form %}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keyinroq</button>
+                    <button type="submit" class="btn btn-primary">Baho berish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{% if rad_ochiq or biriktirish_ochiq or yakunlash_ochiq or baho_ochiq or tasdiq_ochiq %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var id = '{% if rad_ochiq %}radModal{% elif biriktirish_ochiq %}biriktirishModal{% elif yakunlash_ochiq %}yakunlashModal{% elif baho_ochiq %}bahoModal{% else %}tasdiqModal{% endif %}';
+            new bootstrap.Modal(document.getElementById(id)).show();
+        });
+    </script>
+{% endif %}
+{% endblock %}

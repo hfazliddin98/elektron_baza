@@ -57,6 +57,7 @@ class Usta(models.Model):
     fio = models.CharField('F.I.Sh.', max_length=150)
     mutaxassisligi = models.CharField('Mutaxassisligi', max_length=150, blank=True)
     telefon = models.CharField('Telefon', max_length=20, blank=True)
+    telegram_id = models.BigIntegerField('Telegram ID', unique=True, null=True, blank=True)
     faol = models.BooleanField('Faol', default=True)
 
     class Meta:

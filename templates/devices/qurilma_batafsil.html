@@ -45,6 +45,14 @@
                 </dl>
             </div>
 
+            {% if user.is_xodim %}
+                <div class="card-footer bg-white">
+                    <a href="{% url 'murojaat_yangi' %}?qurilma={{ qurilma.pk }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-send"></i> Ta'mirga murojaat yuborish
+                    </a>
+                </div>
+            {% endif %}
+
             {% if user.is_admin or user.is_operator %}
                 <div class="card-footer bg-white d-flex flex-wrap gap-2">
                     <a href="{% url 'qurilma_tahrirlash' qurilma.pk %}" class="btn btn-sm btn-outline-primary">
