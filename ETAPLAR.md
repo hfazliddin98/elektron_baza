@@ -21,7 +21,7 @@
 | 1 | Tahlil va texnik topshiriq | 1 hafta | TZ hujjati | ⬜ Boshlanmagan |
 | 2 | Loyihalash (ERD, arxitektura) | 1 hafta | Baza sxemasi, sahifa eskizlari | ⬜ Boshlanmagan |
 | 3 | Muhitni tayyorlash | 2–3 kun | Django skelet loyiha | ✅ Tugagan |
-| 4 | Modellar va admin panel | 1 hafta | Baza jadvallari, admin | ⬜ Boshlanmagan |
+| 4 | Modellar va admin panel | 1 hafta | Baza jadvallari, admin | ✅ Tugagan |
 | 5 | Autentifikatsiya va rollar | 1 hafta | Login, 5 xil rol | ⬜ Boshlanmagan |
 | 6 | Qurilmalar moduli | 1 hafta | Reestr + Excel import + QR-kod | ⬜ Boshlanmagan |
 | 7 | Murojaatlar moduli | 1 hafta | Elektron murojaat + o'zi ta'mirlash + tasdiqlash | ⬜ Boshlanmagan |
@@ -122,14 +122,15 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** ERD asosida haqiqiy baza jadvallarini yaratish.
 
 **Vazifalar:**
-- [ ] `Bolim`, `Xodim` modellari (`devices` app) — Xodim User bilan bog'lanadi, `telegram_id` maydoni bilan
-- [ ] `Qurilma` modeli — inventar raqami unikal
-- [ ] `Usta` modeli (`accounts` app, User bilan bog'langan)
-- [ ] `TamirYozuvi` modeli — `turi`, `manba`, `muhimlik`, `holat`, `tasdiq holati`, `baho` uchun `choices`; `qayta_tamir` FK; sanalar avtomatik
-- [ ] `StatusTarix` modeli — har status o'zgarishida avtomatik yozilishi (save metodi yoki signal orqali)
-- [ ] Migratsiyalar: `makemigrations` + `migrate`
-- [ ] Barcha modellarni admin panelda ro'yxatdan o'tkazish (qidiruv, filtr bilan)
-- [ ] Test uchun namunaviy ma'lumotlar (10–15 ta qurilma, 3–4 usta, 5–6 xodim)
+- [x] Maxsus `User` modeli (`accounts` app) — `rol` maydoni bilan (admin/operator/usta/xodim/rahbariyat), `AUTH_USER_MODEL` sozlandi
+- [x] `Bolim`, `Xodim` modellari (`devices` app) — Xodim User bilan bog'lanadi, `telegram_id` maydoni bilan
+- [x] `Qurilma` modeli — inventar raqami unikal
+- [x] `Usta` modeli (`accounts` app, User bilan bog'langan)
+- [x] `TamirYozuvi` modeli — `turi`, `manba`, `muhimlik`, `holat`, `tasdiq holati`, `baho` uchun `choices`; `qayta_tamir` FK; sanalar avtomatik; qurilma holati avtomatik sinxronlanadi; qayta ta'mir (30 kun) avtomatik aniqlanadi
+- [x] `StatusTarix` modeli — har status o'zgarishida avtomatik yoziladi (save metodi orqali)
+- [x] Migratsiyalar: `makemigrations` + `migrate`
+- [x] Barcha modellarni admin panelda ro'yxatdan o'tkazish (qidiruv, filtr, autocomplete, status tarixi inline bilan)
+- [x] Test uchun namunaviy ma'lumotlar — `python manage.py namuna` (3 bo'lim, 6 xodim, 4 usta, 12 qurilma, 5 ta'mir yozuvi)
 
 **Natija:** to'liq baza + ishlaydigan admin panel.
 
@@ -153,7 +154,7 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 
 **Vazifalar:**
 - [ ] Login / logout sahifalari
-- [ ] Rollarni Django groups yoki `role` maydoni orqali qilish
+- [ ] Rollar: `accounts.User.rol` maydoni asosida (model 4-bosqichda yaratilgan) ruxsatlarni ulash
 - [ ] Har bir view'da rol tekshiruvi (decorator/mixin)
 - [ ] Parolni o'zgartirish
 - [ ] Har bir amal tarixini saqlash (kim, qachon, nima qildi)
