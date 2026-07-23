@@ -1,0 +1,27 @@
+; Django saytini Gunicorn orqali ishga tushiradi.
+; Joylashtirish:  sudo cp deploy/elektron-baza.service /etc/systemd/system/
+;                 sudo systemctl daemon-reload
+;                 sudo systemctl enable --now elektron-baza
+
+[Unit]
+Description=Elektron Baza — universitet qurilmalari ta'mirlash tizimi
+After=network.target postgresql.service
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/elektron_baza
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/srv/elektron_baza/venv/bin/gunicorn config.wsgi:application \
+    --bind unix:/run/elektron-baza.sock \
+    --workers 3 \
+    --timeout 60 \
+    --access-logfile /var/log/elektron_baza/access.log \
+    --error-logfile /var/log/elektron_baza/error.log
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

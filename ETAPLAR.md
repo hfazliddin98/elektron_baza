@@ -316,20 +316,24 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** murojaat yuborish, xabarnoma olish va baholashni Telegram orqali ham qilish.
 
 **Vazifalar:**
-- [ ] Bot yaratish (aiogram), token `.env` da
-- [ ] Ro'yxatdan o'tish: xodim telefon raqami orqali tizimdagi profiliga bog'lanadi (`telegram_id` saqlanadi)
-- [ ] Murojaat yuborish: qurilmani tanlash (yoki inventar raqam yozish) → muammo tavsifi → **shoshilinchlik** → **usta tanlash** (ixtiyoriy, "farqi yo'q" tugmasi bilan) → rasm (ixtiyoriy) → tasdiqlash
-- [ ] "Mening murojaatlarim" — bot orqali holatlarni ko'rish
-- [ ] Xodimga avtomatik xabarnomalar: "murojaat qabul qilindi", "ta'mirga olindi", "qurilmangiz tayyor — olib keting"
-- [ ] **Ustalarga xabarnomalar:** navbatga yangi ta'mir tushganda (shoshilinch bo'lsa alohida belgi bilan); operator to'g'ridan-to'g'ri biriktirganda shaxsiy xabar; xodim uni shaxsan tanlaganda — "sizga so'ralgan yangi ta'mir" xabari (qabul/rad tugmalari bilan)
-- [ ] Topshirilgandan keyin bot baholash so'rashi (1–5 tugmalar + izoh)
-- [ ] **Baho eslatmasi:** 3 kundan keyin baholamaganlarga avtomatik eslatma (9-bosqich qoidasi)
-- [ ] Operator/admin guruhiga yangi murojaat haqida bildirishnoma
-- [ ] Django bilan umumiy baza orqali integratsiya (polling rejimida boshlash, deploy'da webhook)
+- [x] Bot yaratish (aiogram 3), token `.env` da; `python manage.py bot` bilan ishga tushadi
+- [x] Ro'yxatdan o'tish: telefon raqami orqali xodim yoki usta profiliga bog'lanadi (`telegram_id`); bitta Telegram hisobi faqat bitta profilga bog'lanadi
+- [x] Murojaat yuborish: qurilma → muammo → **shoshilinchlik** → **usta tanlash** («Farqi yo'q» tugmasi bilan)
+- [x] "Mening murojaatlarim" — bot orqali holatlarni ko'rish; baholanmaganlar uchun baho tugmalari
+- [x] Ustalar uchun: «Navbat» va «Mening ishlarim» bo'limlari
+- [x] Xodimga avtomatik xabarnomalar: qabul qilindi, ta'mirga olindi, qurilmangiz tayyor, topshirildi, rad etildi
+- [x] **Ustalarga xabarnomalar:** navbatga yangi ish (shoshilinch alohida belgi bilan), shaxsan so'ralganda, biriktirilganda
+- [x] Topshirilgandan keyin bot baholash so'rashi (1–5 tugmalar)
+- [x] **Baho eslatmasi:** 3 kundan keyin (`kunlik_vazifalar`)
+- [x] Operator/admin guruhiga yangi murojaat, past baho va SLA ogohlantirishlari
+- [x] Django bilan umumiy baza orqali integratsiya (polling; xabar yuborish `urllib` orqali — bot jarayoni ishlamasa ham xabarlar boradi)
 
 **Natija:** to'liq ishlaydigan Telegram bot.
 
 **Tugash mezoni:** xodim botdan murojaat yuborib, "tayyor" xabarini olib, botdan baho qo'ya oladi; ustalar yangi ishdan xabardor bo'ladi.
+
+> **Eslatma:** botni ishga tushirish uchun `.env` da `BOT_TOKEN` bo'lishi kerak.
+> Token bo'lmasa sayt xatosiz ishlayveradi — xabarlar shunchaki yuborilmaydi.
 
 ---
 
@@ -338,23 +342,24 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** rahbariyat uchun oylik va yillik hisobotlar.
 
 **Hisobot turlari:**
-- [ ] **Oylik/yillik umumiy hisobot:** davr ichida nechta murojaat kelib tushdi, nechta ta'mir tugatildi, o'rtacha ta'mir muddati
-- [ ] **Bosqichlar bo'yicha o'rtacha vaqt** (`StatusTarix` asosida): qabuldan tashxisgacha, tashxisdan ta'mirgacha, ta'mirdan topshirishgacha
-- [ ] **Ustalar kesimida:** har bir usta nechta qurilma ta'mirlagan + **o'rtacha bahosi (reyting)** + **qayta ta'mirlar foizi** (sifat ko'rsatkichi) + **necha marta xodimlar tomonidan shaxsan so'ralgani** (ishonch ko'rsatkichi)
-- [ ] **SLA buzilishlari:** davr ichida muddati o'tgan ta'mirlar soni va sabablari
-- [ ] **Xodimlar kesimida:** kim necha marta murojaat qilgan / qurilma olib kelgan
-- [ ] **O'zi ta'mirlanganlar:** qaysi xodim nechta qurilmani o'zi ta'mirlagan (faqat tasdiqlanganlari)
-- [ ] **Bo'limlar kesimida:** qaysi bo'lim qurilmalari ko'p buziladi
-- [ ] **Qurilmalar kesimida:** eng ko'p ta'mirlangan qurilmalar (almashtirish kerakligini ko'rsatadi)
-- [ ] **Murojaat manbalari:** sayt / bot / operator orqali kelganlar nisbati
-- [ ] **Xarajatlar:** davr bo'yicha ehtiyot qismlar va ta'mir xarajatlari
+- [x] **Oylik/yillik umumiy hisobot:** kelib tushgan, tugatilgan, rad etilgan, jarayondagi, o'rtacha ta'mir muddati
+- [x] **Bosqichlar bo'yicha o'rtacha vaqt:** qabuldan navbatgacha, navbatda kutish, ta'mir ishlari, topshirishgacha
+- [x] **Ustalar kesimida:** ta'mirlar soni + **o'rtacha baho (reyting)** + **qayta ta'mirlar foizi** + **shaxsan so'ralgan soni** + hozirgi ish yuki
+- [x] **SLA buzilishlari:** muddati o'tgan ta'mirlar ro'yxati va kechikish kunlari
+- [x] **Xodimlar kesimida:** kim necha marta murojaat qilgan
+- [x] **O'zi ta'mirlanganlar:** xodim kesimida (faqat tasdiqlanganlari)
+- [x] **Bo'limlar kesimida:** qurilmalar va murojaatlar soni
+- [x] **Qurilmalar kesimida:** eng ko'p ta'mirlangan 15 ta qurilma va ularga ketgan xarajat
+- [x] **Murojaat manbalari:** sayt / bot / operator nisbati (diagramma)
+- [x] **Xarajatlar:** davr bo'yicha jami (tasdiqlanmagan o'zi-ta'mirlar hisobga kirmaydi)
 
 **Vazifalar:**
-- [ ] Davr tanlash (oy/yil/ixtiyoriy oraliq) bilan hisobot sahifalari
-- [ ] Diagrammalar (Chart.js): oylar bo'yicha murojaatlar, ustalar taqqoslash, reytinglar
-- [ ] **Excel'ga eksport** (openpyxl)
-- [ ] **PDF hisobot** (WeasyPrint) — chop etib rahbariyatga topshirish uchun
-- [ ] Rahbariyat roli uchun alohida hisobot dashboard'i
+- [x] Davr tanlash: sana oralig'i + tayyor tugmalar (shu oy, o'tgan oy, shu yil, o'tgan yil)
+- [x] Diagrammalar (Chart.js): oylik dinamika, ustalar taqqoslash + reyting, manbalar
+- [x] **Excel'ga eksport** (openpyxl) — 6 varaqli fayl
+- [x] **PDF hisobot** (xhtml2pdf — WeasyPrint o'rniga, chunki Windows'da qo'shimcha kutubxonasiz ishlaydi)
+- [x] Rahbariyat roli uchun hisobotlar bo'limi (boshqa bo'limlarga kirmaydi)
+- [x] Barcha uch format bitta hisoblash moduli (`reports/hisobot.py`) dan foydalanadi — raqamlar bir xil bo'lishi kafolatlanadi
 
 **Natija:** oylik/yillik hisobotlar tizimi.
 
@@ -367,24 +372,26 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** real ishga tushirishdan oldin xatolardan tozalash.
 
 **Vazifalar:**
-- [ ] Modellar va asosiy view'lar uchun testlar yozish
-- [ ] Murojaat → navbat → ta'mir → topshirish → baholash zanjirini to'liq qo'lda tekshirish
-- [ ] **Navbat tekshiruvi:** ikki usta bir ta'mirni bir vaqtda olishga urinsa, faqat bittasiga tegishi; navbatda faqat eng eski 10 ta ko'rinishi
-- [ ] **Usta tanlash tekshiruvi:** tanlangan usta rad etganda yoki 1 ish kuni javob bermaganda ta'mir umumiy navbatga qaytishi
-- [ ] O'zi-ta'mir oqimini tekshirish: tasdiqlangani tarixga tushishi, rad etilgani tushmasligi
-- [ ] **Excel import:** noto'g'ri fayl/qatorlarda tushunarli xato ko'rsatishi, to'g'ri fayl to'liq yuklanishi
-- [ ] **SLA va qayta ta'mir:** muddati o'tganlar qizil ko'rinishi, 30 kun ichida qaytgan qurilma avtomatik belgilanishi
-- [ ] **Avtoyopish:** 7 kunda baholanmagan ta'mir avto-yopilishi, eslatma bir marta ketishi
-- [ ] Rollar tekshiruvi: xodim boshqa xodim murojaatini ko'rmasligi, usta hisobotga kirmasligi
-- [ ] Baho faqat bir marta qo'yilishini tekshirish
-- [ ] Bot ssenariylarini tekshirish (ro'yxatdan o'tish, murojaat, xabarnomalar, baho)
-- [ ] Hisobot raqamlarini qo'lda hisoblab solishtirish
-- [ ] Noto'g'ri ma'lumot kiritilganda forma xatolarni chiroyli ko'rsatishi
-- [ ] Topilgan xatolarni tuzatish
+- [x] Modellar va view'lar uchun testlar — **jami 91 ta test**, `python manage.py test` bilan ishga tushadi
+- [x] **To'liq zanjir testi** (`repairs/tests_integratsiya.py`): saytdan murojaat → qabul → navbat → ta'mir → topshirish → baho → hisobot; va botdan murojaat → baho → hisobot
+- [x] **Navbat tekshiruvi:** ikki usta bir ishni olishga urinsa faqat bittasiga tegishi; navbat tartibi (shoshilinch tepada)
+- [x] **Usta tanlash tekshiruvi:** rad etilganda va 1 ish kuni javob bo'lmaganda umumiy navbatga qaytishi
+- [x] O'zi-ta'mir oqimi: tasdiqlangani hisobotga tushishi, rad etilgani tushmasligi
+- [x] **Excel import:** noto'g'ri sarlavha, xato qatorlar (qator raqami bilan), takroriy inventar raqam, mavjudlarni o'tkazib yuborish/yangilash
+- [x] **SLA va qayta ta'mir:** kechikkanlar aniqlanishi, 30 kun ichida qaytgan qurilma belgilanishi, 40 kundan keyingisi belgilanmasligi
+- [x] **Avtoyopish:** 3 kunda eslatma, 7 kunda bahosiz yopilish, `--quruq` rejim hech narsani o'zgartirmasligi
+- [x] Rollar tekshiruvi: har bir rol uchun ruxsat etilgan/etilmagan sahifalar (403)
+- [x] Baho faqat bir marta va faqat o'z murojaatiga qo'yilishi
+- [x] Bot: telefon formatlarini tanish, profil bog'lash, murojaat yaratish, baho, Telegram ishlamaganda dastur yiqilmasligi
+- [x] Hisobot raqamlari (xarajat, reyting, qayta ta'mir foizi) test bilan tekshirilgan
+- [x] Topilgan xatolar tuzatildi (masalan: bitta Telegram hisobi ikkala profilga bog'lanib qolishi, xodim ko'ra olmaydigan qurilma QR-kodini olishi)
 
 **Natija:** barqaror versiya.
 
 **Tugash mezoni:** kritik xatolar yo'q, hisobot raqamlari aniq, bot barqaror ishlaydi.
+
+> **Qolgan qo'lda tekshiruv:** haqiqiy Telegram boti bilan (token bilan) dialoglarni
+> bir marta o'tib chiqish va real foydalanuvchilar bilan 1 haftalik sinov (MVP bosqichi).
 
 ---
 
@@ -392,18 +399,23 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 
 **Maqsad:** tizimni universitet serveriga joylash.
 
-**Vazifalar:**
-- [ ] Server tayyorlash (universitet lokal serveri yoki VPS)
-- [ ] Gunicorn + Nginx sozlash
-- [ ] `DEBUG=False`, xavfsizlik sozlamalari, static fayllar
-- [ ] Botni production rejimga o'tkazish (webhook yoki systemd service sifatida polling)
-- [ ] SLA eslatmalari va avtoyopish uchun rejalashtirilgan vazifalar (cron / celery beat) sozlash
-- [ ] Kunlik avtomatik backup (baza dump)
-- [ ] Real ma'lumotlarni kiritish — Excel import orqali (qurilmalar, xodimlar), QR-kodlarni chop etib yopishtirish
-- [ ] Foydalanuvchi qo'llanmasi yozish (xodim, operator va usta uchun alohida)
-- [ ] Foydalanuvchilarni o'qitish
+**Tayyor fayllar** (`deploy/` papkasi):
+- [x] `DEPLOY.md` — qadam-baqadam o'rnatish yo'riqnomasi (server, PostgreSQL, `.env`, xizmatlar, HTTPS, muammolarni aniqlash jadvali)
+- [x] `elektron-baza.service` — Gunicorn uchun systemd xizmati
+- [x] `elektron-baza-bot.service` — bot uchun systemd xizmati (avtomatik qayta ishga tushadi)
+- [x] `nginx.conf` — static/media yo'llari va proksi sozlamalari bilan
+- [x] `backup.sh` — kunlik baza va media zaxirasi, 30 kundan eskisini tozalash, tiklash buyrug'i izohda
+- [x] `crontab.txt` — `kunlik_vazifalar`, zaxiralash va sessiyalarni tozalash jadvali
+- [x] Production xavfsizlik sozlamalari `settings.py` da (`DEBUG=False` bo'lganda HTTPS, HSTS, xavfsiz cookie'lar; ichki server uchun `HTTPS=False` varianti)
+- [x] Fayl loglari (`LOG_FAYL`) va aylanuvchi log fayllari
+- [x] `QOLLANMA.md` — foydalanuvchi qo'llanmasi (xodim, usta, operator, admin, rahbariyat bo'limlari + tez-tez so'raladigan savollar)
 
-**Natija:** ishga tushirilgan tizim + bot + qo'llanma.
+**Serverda bajariladigan ishlar** (universitet serveri kerak):
+- [ ] Serverni tayyorlash va `DEPLOY.md` bo'yicha o'rnatish
+- [ ] Real ma'lumotlarni kiritish — Excel import orqali (qurilmalar, xodimlar)
+- [ ] QR-kodlarni chop etib qurilmalarga yopishtirish
+- [ ] BotFather'dan token olib `.env` ga yozish, operator/admin guruhini yaratish
+- [ ] Foydalanuvchilarni o'qitish (`QOLLANMA.md` asosida)
 
 **Tugash mezoni:** xodimlar saytdan/botdan murojaat yuborib ishlay oladi; QR-kodlar qurilmalarga yopishtirilgan.
 
@@ -412,14 +424,27 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 ## 14-bosqich. Qo'llab-quvvatlash va rivojlantirish
 
 **Doimiy vazifalar:**
-- [ ] Backuplar ishlashini muntazam tekshirish
+- [ ] Backuplar ishlashini muntazam tekshirish (`/var/log/elektron_baza/backup.log`)
 - [ ] Foydalanuvchi muammolarini tuzatish
-- [ ] Kutubxonalarni yangilab borish
+- [ ] Kutubxonalarni yangilab borish (`pip list --outdated`)
+- [ ] Har chorakda hisobotlarni ko'rib chiqish: eng ko'p ta'mirlangan qurilmalarni almashtirish rejasi
+
+**Muntazam tekshiruv ro'yxati** (oyiga bir marta):
+
+| Tekshiruv | Buyruq / joy |
+|-----------|--------------|
+| Zaxira yaratilyaptimi | `ls -lh /var/backups/elektron_baza \| tail` |
+| Xizmatlar ishlayaptimi | `systemctl status elektron-baza elektron-baza-bot` |
+| Kunlik vazifalar bajarilyaptimi | `tail /var/log/elektron_baza/kunlik.log` |
+| Xavfsizlik ogohlantirishlari | `venv/bin/python manage.py check --deploy` |
+| Testlar o'tyaptimi (yangilanishdan keyin) | `venv/bin/python manage.py test` |
+| Muddati o'tgan ta'mirlar ko'p emasmi | Panel → «Muddati o'tgan (SLA)» |
 
 **Kelajakdagi g'oyalar:**
 - [ ] REST API (Django REST Framework) — mobil ilova uchun
 - [ ] Ehtiyot qismlar ombori moduli
 - [ ] SMS xabarnomalar (Telegram ishlatmaydigan xodimlar uchun)
+- [ ] Botdan turib usta ishni qabul qilishi (hozir sayt orqali)
 
 ---
 

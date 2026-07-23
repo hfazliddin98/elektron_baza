@@ -88,7 +88,10 @@
                     {% endif %}
 
                     {% if user.is_admin or user.is_rahbariyat %}
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Hisobotlar</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'hisobot' %} active{% endif %}"
+                               href="{% url 'hisobot' %}">Hisobotlar</a>
+                        </li>
                     {% endif %}
 
                     {% if user.is_admin %}

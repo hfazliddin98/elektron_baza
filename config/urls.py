@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('devices.urls')),
     path('', include('repairs.urls')),
+    path('', include('reports.urls')),
 ]
 
 if settings.DEBUG:

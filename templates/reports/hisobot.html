@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block title %}Hisobotlar — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h4 mb-1">Hisobotlar</h1>
+        <p class="text-muted mb-0 small">Davr: <strong>{{ davr.nomi }}</strong></p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'hisobot_excel' %}?dan={{ dan }}&gacha={{ gacha }}" class="btn btn-sm btn-success">
+            <i class="bi bi-file-earmark-excel"></i> Excel
+        </a>
+        <a href="{% url 'hisobot_pdf' %}?dan={{ dan }}&gacha={{ gacha }}" class="btn btn-sm btn-danger">
+            <i class="bi bi-file-earmark-pdf"></i> PDF
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small">Boshlanish sanasi</label>
+                <input type="date" name="dan" value="{{ dan }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Tugash sanasi</label>
+                <input type="date" name="gacha" value="{{ gacha }}" class="form-control">
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-primary">Ko'rsatish</button>
+            </div>
+            <div class="col-md">
+                <div class="d-flex flex-wrap gap-1 justify-content-md-end">
+                    {% for nom, b, t in tez_havolalar %}
+                        <a href="?dan={{ b|date:'Y-m-d' }}&gacha={{ t|date:'Y-m-d' }}"
+                           class="btn btn-sm btn-outline-secondary">{{ nom }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# --- Umumiy ko'rsatkichlar --- #}
+<h2 class="h6 text-uppercase text-muted mb-3">Umumiy ko'rsatkichlar</h2>
+<div class="row g-3 mb-3">
+    {% include 'includes/stat_card.html' with nom='Kelib tushgan' qiymat=umumiy.kelgan ikon='bi-inboxes' rang='primary' %}
+    {% include 'includes/stat_card.html' with nom='Tugatilgan' qiymat=umumiy.tugatilgan ikon='bi-check2-circle' rang='success' %}
+    {% include 'includes/stat_card.html' with nom='Hozir jarayonda' qiymat=umumiy.jarayonda ikon='bi-hourglass-split' rang='info' %}
+    {% include 'includes/stat_card.html' with nom="Muddati o'tgan" qiymat=umumiy.kechikkan ikon='bi-clock-history' rang='danger' %}
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">O'rtacha ta'mir muddati</div>
+            <div class="fs-3 fw-semibold">
+                {% if umumiy.ortacha_muddat %}{{ umumiy.ortacha_muddat }} <span class="fs-6 text-muted">kun</span>
+                {% else %}—{% endif %}
+            </div>
+        </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">O'rtacha baho</div>
+            <div class="fs-3 fw-semibold">
+                {% if umumiy.ortacha_baho %}{{ umumiy.ortacha_baho|floatformat:2 }}<i class="bi bi-star-fill text-warning fs-6 ms-1"></i>
+                {% else %}—{% endif %}
+            </div>
+            <div class="small text-muted">{{ umumiy.baholanmagan }} ta baholanmagan</div>
+        </div></div>
+    </div>
+    {% include 'includes/stat_card.html' with nom="O'zi ta'mirlagan" qiymat=umumiy.ozi_tamir ikon='bi-person-gear' rang='secondary' %}
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">Jami xarajat</div>
+            <div class="fs-4 fw-semibold">{{ umumiy.xarajat|floatformat:0 }} <span class="fs-6 text-muted">so'm</span></div>
+        </div></div>
+    </div>
+</div>
+
+{# --- Diagrammalar --- #}
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100"><div class="card-body">
+            <h2 class="h6 mb-3">Oylar bo'yicha dinamika (oxirgi 12 oy)</h2>
+            <canvas id="oylarChart" height="110"></canvas>
+        </div></div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100"><div class="card-body">
+            <h2 class="h6 mb-3">Murojaat manbalari</h2>
+            <canvas id="manbaChart" height="180"></canvas>
+        </div></div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4"><div class="card-body">
+    <h2 class="h6 mb-3">Ustalar bo'yicha ta'mirlar va reyting</h2>
+    <canvas id="ustaChart" height="90"></canvas>
+</div></div>
+
+{# --- Bosqichlar --- #}
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body pb-0"><h2 class="h6 mb-3">Bosqichlar bo'yicha o'rtacha vaqt</h2></div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        {% for nom, kun in bosqichlar %}
+                            <tr>
+                                <td class="small">{{ nom }}</td>
+                                <td class="text-end small fw-semibold">
+                                    {% if kun is not None %}{{ kun }} kun{% else %}—{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body pb-0"><h2 class="h6 mb-3">Sifat ko'rsatkichlari</h2></div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <tr><td class="small">Shoshilinch murojaatlar</td>
+                            <td class="text-end small fw-semibold">{{ umumiy.shoshilinch }}</td></tr>
+                        <tr><td class="small">Qayta ta'mirlar (30 kun ichida qaytgan)</td>
+                            <td class="text-end small fw-semibold">{{ umumiy.qayta_tamir }}</td></tr>
+                        <tr><td class="small">Rad etilgan murojaatlar</td>
+                            <td class="text-end small fw-semibold">{{ umumiy.rad_etilgan }}</td></tr>
+                        <tr><td class="small">O'zi ta'mirlagan — rad etilgan hisobotlar</td>
+                            <td class="text-end small fw-semibold">{{ umumiy.ozi_tamir_rad }}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Ustalar --- #}
+<h2 class="h6 text-uppercase text-muted mb-2">Ustalar kesimida</h2>
+<div class="card shadow-sm mb-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Usta</th><th class="text-center">Ta'mirlar</th><th class="text-center">Reyting</th>
+                    <th class="text-center">Qayta ta'mir</th><th class="text-center">Shaxsan so'ralgan</th>
+                    <th class="text-center">Hozir aktiv</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usta in ustalar %}
+                    <tr>
+                        <td>{{ usta.fio }}<br><span class="text-muted small">{{ usta.mutaxassisligi }}</span></td>
+                        <td class="text-center fw-semibold">{{ usta.tamirlar_soni }}</td>
+                        <td class="text-center">
+                            {% if usta.reyting %}{{ usta.reyting|floatformat:2 }}<i class="bi bi-star-fill text-warning small ms-1"></i>
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                        <td class="text-center">
+                            {{ usta.qayta_soni }}
+                            {% if usta.qayta_foiz %}<span class="text-muted small">({{ usta.qayta_foiz }}%)</span>{% endif %}
+                        </td>
+                        <td class="text-center">{{ usta.soralgan_soni }}</td>
+                        <td class="text-center">{{ usta.aktiv }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-3">Ma'lumot yo'q.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# --- Xodimlar va bo'limlar --- #}
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <h2 class="h6 text-uppercase text-muted mb-2">Xodimlar kesimida</h2>
+        <div class="card shadow-sm">
+            <div class="table-responsive" style="max-height: 340px;">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light"><tr>
+                        <th>Xodim</th><th>Bo'lim</th>
+                        <th class="text-center">Murojaat</th><th class="text-center">O'zi</th>
+                    </tr></thead>
+                    <tbody>
+                        {% for x in xodimlar %}
+                            <tr>
+                                <td class="small">{{ x.fio }}</td>
+                                <td class="small text-muted">{{ x.bolim.nomi }}</td>
+                                <td class="text-center">{{ x.murojaat_soni }}</td>
+                                <td class="text-center">{{ x.ozi_soni }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted py-3">Ma'lumot yo'q.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <h2 class="h6 text-uppercase text-muted mb-2">Bo'limlar kesimida</h2>
+        <div class="card shadow-sm">
+            <div class="table-responsive" style="max-height: 340px;">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light"><tr>
+                        <th>Bo'lim</th><th class="text-center">Qurilmalar</th>
+                        <th class="text-center">Murojaatlar</th>
+                    </tr></thead>
+                    <tbody>
+                        {% for b in bolimlar %}
+                            <tr>
+                                <td class="small">{{ b.nomi }}</td>
+                                <td class="text-center">{{ b.qurilmalar_soni }}</td>
+                                <td class="text-center fw-semibold">{{ b.murojaat_soni }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Qurilmalar --- #}
+<h2 class="h6 text-uppercase text-muted mb-2">Eng ko'p ta'mirlangan qurilmalar</h2>
+<p class="text-muted small">Ko'p ta'mirlangan qurilmalarni almashtirish arzonroq tushishi mumkin.</p>
+<div class="card shadow-sm mb-4">
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+            <thead class="table-light"><tr>
+                <th>Inventar raqami</th><th>Turi</th><th>Modeli</th><th>Bo'limi</th>
+                <th class="text-center">Ta'mirlar</th><th class="text-end">Xarajat</th>
+            </tr></thead>
+            <tbody>
+                {% for q in qurilmalar %}
+                    <tr>
+                        <td><a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.inventar_raqami }}</a></td>
+                        <td class="small">{{ q.get_turi_display }}</td>
+                        <td class="small">{{ q.modeli|default:'—' }}</td>
+                        <td class="small">{{ q.bolim.nomi }}</td>
+                        <td class="text-center fw-semibold">{{ q.tamir_soni }}</td>
+                        <td class="text-end small">{{ q.xarajat|default:0|floatformat:0 }} so'm</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-3">Ma'lumot yo'q.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# --- SLA --- #}
+{% if kechikkanlar %}
+    <h2 class="h6 text-uppercase text-muted mb-2">Muddati o'tgan ta'mirlar</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light"><tr>
+                    <th>#</th><th>Qurilma</th><th>Holat</th><th>Usta</th><th class="text-center">Kechikish</th>
+                </tr></thead>
+                <tbody>
+                    {% for t in kechikkanlar %}
+                        <tr>
+                            <td><a href="{{ t.get_absolute_url }}" class="text-decoration-none">#{{ t.pk }}</a></td>
+                            <td class="small">{{ t.qurilma.inventar_raqami }}</td>
+                            <td class="small">{{ t.get_holat_display }}</td>
+                            <td class="small">{{ t.usta.fio|default:'—' }}</td>
+                            <td class="text-center"><span class="badge text-bg-danger">{{ t.kechikkan_kun }} kun</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{{ diagramma|json_script:"diagramma-malumot" }}
+<script>
+(function () {
+    var d = JSON.parse(document.getElementById('diagramma-malumot').textContent);
+    var kok = '#0d6efd', yashil = '#198754', sariq = '#ffc107', kulrang = '#6c757d';
+
+    new Chart(document.getElementById('oylarChart'), {
+        type: 'line',
+        data: {
+            labels: d.oylar,
+            datasets: [
+                {label: 'Kelib tushgan', data: d.kelgan, borderColor: kok,
+                 backgroundColor: kok, tension: 0.3},
+                {label: 'Tugatilgan', data: d.tugatilgan, borderColor: yashil,
+                 backgroundColor: yashil, tension: 0.3}
+            ]
+        },
+        options: {scales: {y: {beginAtZero: true, ticks: {precision: 0}}}}
+    });
+
+    new Chart(document.getElementById('manbaChart'), {
+        type: 'doughnut',
+        data: {labels: d.manba_nomlari,
+               datasets: [{data: d.manba_soni, backgroundColor: [kulrang, kok, yashil]}]},
+        options: {plugins: {legend: {position: 'bottom'}}}
+    });
+
+    new Chart(document.getElementById('ustaChart'), {
+        type: 'bar',
+        data: {
+            labels: d.ustalar,
+            datasets: [
+                {label: "Ta'mirlar soni", data: d.usta_soni, backgroundColor: kok, yAxisID: 'y'},
+                {label: "O'rtacha baho", data: d.usta_reyting, backgroundColor: sariq,
+                 type: 'line', borderColor: sariq, yAxisID: 'y2'}
+            ]
+        },
+        options: {
+            scales: {
+                y: {beginAtZero: true, ticks: {precision: 0}, position: 'left'},
+                y2: {beginAtZero: true, max: 5, position: 'right', grid: {drawOnChartArea: false}}
+            }
+        }
+    });
+})();
+</script>
+{% endblock %}

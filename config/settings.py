@@ -148,3 +148,51 @@ MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 BOT_TOKEN = os.getenv('BOT_TOKEN', '')
 BOT_ADMIN_CHAT = os.getenv('BOT_ADMIN_CHAT', '')   # operator/admin guruhi chat_id
 SAYT_MANZILI = os.getenv('SAYT_MANZILI', 'http://127.0.0.1:8000')
+
+
+# Ishlab chiqarish (production) xavfsizligi — faqat DEBUG=False bo'lganda
+
+CSRF_TRUSTED_ORIGINS = [
+    manzil.strip() for manzil in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if manzil.strip()
+]
+
+if not DEBUG:
+    # HTTPS bo'lmagan ichki serverda .env da HTTPS=False qiling
+    https = os.getenv('HTTPS', 'True') == 'True'
+    SECURE_SSL_REDIRECT = https
+    SESSION_COOKIE_SECURE = https
+    CSRF_COOKIE_SECURE = https
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000 if https else 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = https
+    SECURE_HSTS_PRELOAD = https
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+
+
+# Loglash — LOG_FAYL sozlansa, faylga ham yoziladi
+
+LOG_FAYL = os.getenv('LOG_FAYL', '')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'oddiy': {'format': '{asctime} {levelname} {name}: {message}', 'style': '{'},
+    },
+    'handlers': {
+        'konsol': {'class': 'logging.StreamHandler', 'formatter': 'oddiy'},
+        **({'fayl': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_FAYL,
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 5,
+            'formatter': 'oddiy',
+        }} if LOG_FAYL else {}),
+    },
+    'root': {
+        'handlers': ['konsol'] + (['fayl'] if LOG_FAYL else []),
+        'level': 'INFO',
+    },
+}

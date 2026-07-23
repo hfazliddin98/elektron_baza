@@ -1,0 +1,14 @@
+# Elektron Baza — rejalashtirilgan vazifalar
+#
+# O'rnatish:  sudo crontab -e   (yoki: sudo crontab deploy/crontab.txt)
+# Tekshirish: sudo crontab -l
+
+# Har kuni soat 08:00 da: SLA ogohlantirishi, baho eslatmalari,
+# baholanmaganlarni yopish, navbatni tozalash
+0 8 * * * cd /srv/elektron_baza && venv/bin/python manage.py kunlik_vazifalar >> /var/log/elektron_baza/kunlik.log 2>&1
+
+# Har kuni soat 02:00 da: bazani va media fayllarni zaxiralash
+0 2 * * * /usr/local/bin/elektron-baza-backup >> /var/log/elektron_baza/backup.log 2>&1
+
+# Har hafta dushanba 03:00 da: eski sessiyalarni tozalash
+0 3 * * 1 cd /srv/elektron_baza && venv/bin/python manage.py clearsessions

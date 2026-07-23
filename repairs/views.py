@@ -6,10 +6,9 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from accounts.models import AmalTarixi, Usta
+from accounts.models import AmalTarixi
 from accounts.permissions import ADMIN, OPERATOR, USTA, XODIM, rol_kerak
 from accounts.utils import amal_yoz
-from devices.models import Qurilma
 
 from . import xabarnomalar
 from .forms import (

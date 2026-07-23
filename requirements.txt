@@ -4,3 +4,8 @@ psycopg[binary]==3.3.4
 Pillow==12.3.0
 openpyxl==3.1.5
 qrcode==8.2
+xhtml2pdf==0.2.17
+aiogram==3.30.0
+
+# Ishlab chiqarish (production) uchun:
+gunicorn==23.0.0 ; sys_platform != "win32"

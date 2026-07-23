@@ -210,7 +210,7 @@ class Command(BaseCommand):
             )
 
         # 2. Jarayondagi ta'mirlar
-        yangi = TamirYozuvi.objects.create(
+        TamirYozuvi.objects.create(
             qurilma=qurilmalar['UNI-0004'], xodim=xodimlar['Yusupova Malika'],
             manba=TamirYozuvi.Manba.SAYT,
             muammo_tavsifi="Printer qog'oz tortmayapti, chirillagan ovoz chiqaryapti.",

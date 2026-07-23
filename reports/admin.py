@@ -1,3 +1,1 @@
-from django.contrib import admin
-
-# Register your models here.
+# Hisobotlar admin panelda ro'yxatdan o'tkaziladigan modelga ega emas.

@@ -1,3 +1,1 @@
-from django.contrib import admin
-
-# Register your models here.
+# Bot admin panelda ro'yxatdan o'tkaziladigan modelga ega emas.

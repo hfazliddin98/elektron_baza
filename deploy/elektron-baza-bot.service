@@ -1,0 +1,21 @@
+; Telegram botni doimiy ishlatib turadi (polling rejimi).
+; Joylashtirish:  sudo cp deploy/elektron-baza-bot.service /etc/systemd/system/
+;                 sudo systemctl daemon-reload
+;                 sudo systemctl enable --now elektron-baza-bot
+
+[Unit]
+Description=Elektron Baza — Telegram bot
+After=network.target elektron-baza.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/elektron_baza
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/srv/elektron_baza/venv/bin/python manage.py bot
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

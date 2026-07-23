@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page { size: A4 portrait; margin: 1.6cm 1.4cm; }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 9pt; color: #212529; }
+        h1 { font-size: 15pt; margin: 0 0 2px 0; }
+        h2 { font-size: 10.5pt; margin: 16px 0 6px 0; border-bottom: 1px solid #dee2e6;
+             padding-bottom: 3px; }
+        .muted { color: #6c757d; font-size: 8pt; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+        th { background-color: #0d6efd; color: #fff; font-size: 8pt; padding: 4px 5px;
+             text-align: left; }
+        td { padding: 3px 5px; border-bottom: 0.5px solid #dee2e6; font-size: 8.5pt; }
+        .center { text-align: center; }
+        .right { text-align: right; }
+        .kv td:first-child { color: #495057; }
+        .kv td:last-child { text-align: right; font-weight: bold; }
+        .footer { position: fixed; bottom: -1cm; left: 0; right: 0;
+                  font-size: 7.5pt; color: #6c757d; }
+    </style>
+</head>
+<body>
+
+<div class="footer">
+    Elektron Baza — universitet qurilmalari ta'mirlash tizimi ·
+    {{ tayyorlandi|date:'d.m.Y H:i' }} · <pdf:pagenumber>-bet
+</div>
+
+<h1>Ta'mirlash hisoboti</h1>
+<div class="muted">
+    Davr: {{ davr.nomi }} · Tayyorlandi: {{ tayyorlandi|date:'d.m.Y H:i' }} · {{ tayyorlagan }}
+</div>
+
+<h2>Umumiy ko'rsatkichlar</h2>
+<table class="kv">
+    <tr><td>Kelib tushgan murojaatlar</td><td>{{ umumiy.kelgan }}</td></tr>
+    <tr><td>Shundan shoshilinch</td><td>{{ umumiy.shoshilinch }}</td></tr>
+    <tr><td>Tugatilgan (topshirilgan)</td><td>{{ umumiy.tugatilgan }}</td></tr>
+    <tr><td>Rad etilgan</td><td>{{ umumiy.rad_etilgan }}</td></tr>
+    <tr><td>Hozir jarayonda</td><td>{{ umumiy.jarayonda }}</td></tr>
+    <tr><td>Muddati o'tgan (SLA)</td><td>{{ umumiy.kechikkan }}</td></tr>
+    <tr><td>Qayta ta'mirlar</td><td>{{ umumiy.qayta_tamir }}</td></tr>
+    <tr><td>O'zi ta'mirlagan (tasdiqlangan)</td><td>{{ umumiy.ozi_tamir }}</td></tr>
+    <tr><td>O'rtacha ta'mir muddati</td>
+        <td>{% if umumiy.ortacha_muddat %}{{ umumiy.ortacha_muddat }} kun{% else %}—{% endif %}</td></tr>
+    <tr><td>O'rtacha baho</td>
+        <td>{% if umumiy.ortacha_baho %}{{ umumiy.ortacha_baho|floatformat:2 }} / 5{% else %}—{% endif %}</td></tr>
+    <tr><td>Jami xarajat</td><td>{{ umumiy.xarajat|floatformat:0 }} so'm</td></tr>
+</table>
+
+<h2>Bosqichlar bo'yicha o'rtacha vaqt</h2>
+<table class="kv">
+    {% for nom, kun in bosqichlar %}
+        <tr><td>{{ nom }}</td>
+            <td>{% if kun is not None %}{{ kun }} kun{% else %}—{% endif %}</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Ustalar kesimida</h2>
+<table>
+    <thead><tr>
+        <th>Usta</th><th class="center">Ta'mirlar</th><th class="center">Reyting</th>
+        <th class="center">Qayta ta'mir</th><th class="center">So'ralgan</th>
+    </tr></thead>
+    <tbody>
+        {% for usta in ustalar %}
+            <tr>
+                <td>{{ usta.fio }}</td>
+                <td class="center">{{ usta.tamirlar_soni }}</td>
+                <td class="center">{% if usta.reyting %}{{ usta.reyting|floatformat:2 }}{% else %}—{% endif %}</td>
+                <td class="center">{{ usta.qayta_soni }} ({{ usta.qayta_foiz }}%)</td>
+                <td class="center">{{ usta.soralgan_soni }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="center">Ma'lumot yo'q.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Bo'limlar kesimida</h2>
+<table>
+    <thead><tr><th>Bo'lim</th><th class="center">Qurilmalar</th><th class="center">Murojaatlar</th></tr></thead>
+    <tbody>
+        {% for b in bolimlar %}
+            <tr><td>{{ b.nomi }}</td><td class="center">{{ b.qurilmalar_soni }}</td>
+                <td class="center">{{ b.murojaat_soni }}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Eng ko'p ta'mirlangan qurilmalar</h2>
+<table>
+    <thead><tr>
+        <th>Inventar</th><th>Turi</th><th>Bo'limi</th>
+        <th class="center">Ta'mirlar</th><th class="right">Xarajat</th>
+    </tr></thead>
+    <tbody>
+        {% for q in qurilmalar %}
+            <tr>
+                <td>{{ q.inventar_raqami }}</td>
+                <td>{{ q.get_turi_display }}</td>
+                <td>{{ q.bolim.nomi }}</td>
+                <td class="center">{{ q.tamir_soni }}</td>
+                <td class="right">{{ q.xarajat|default:0|floatformat:0 }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="center">Ma'lumot yo'q.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Xodimlar kesimida</h2>
+<table>
+    <thead><tr><th>Xodim</th><th>Bo'lim</th><th class="center">Murojaat</th>
+        <th class="center">O'zi ta'mirlagan</th></tr></thead>
+    <tbody>
+        {% for x in xodimlar %}
+            <tr><td>{{ x.fio }}</td><td>{{ x.bolim.nomi }}</td>
+                <td class="center">{{ x.murojaat_soni }}</td><td class="center">{{ x.ozi_soni }}</td></tr>
+        {% empty %}
+            <tr><td colspan="4" class="center">Ma'lumot yo'q.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
