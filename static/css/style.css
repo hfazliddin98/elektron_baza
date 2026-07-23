@@ -1,18 +1,160 @@
-/* Elektron Baza — umumiy uslublar */
+/* Elektron Baza — Qo'qon davlat universiteti brend ranglari.
+   Ranglar logotipdan olingan (static/img/logo.png):
+   yashil #2E9B57 — logotipning yuqori qismi
+   navy   #0E4A66 — logotipning pastki qismi
+   ko'k   #0089C9 — tashqi halqa */
 
-.navbar-brand i {
-    margin-right: 0.25rem;
+:root {
+    --qdu-yashil: #2e9b57;
+    --qdu-yashil-600: #268049;
+    --qdu-yashil-700: #1f6b3d;
+    --qdu-navy: #0e4a66;
+    --qdu-navy-600: #0b3b52;
+    --qdu-navy-700: #093244;
+    --qdu-kok: #0089c9;
+    --qdu-kok-600: #0072a8;
+
+    /* Bootstrap o'zgaruvchilarini brend ranglariga moslash */
+    --bs-primary: var(--qdu-navy);
+    --bs-primary-rgb: 14, 74, 102;
+    --bs-success: var(--qdu-yashil);
+    --bs-success-rgb: 46, 155, 87;
+    --bs-info: var(--qdu-kok);
+    --bs-info-rgb: 0, 137, 201;
+
+    --bs-link-color: var(--qdu-navy);
+    --bs-link-color-rgb: 14, 74, 102;
+    --bs-link-hover-color: var(--qdu-kok);
+    --bs-link-hover-color-rgb: 0, 137, 201;
+    --bs-focus-ring-color: rgba(14, 74, 102, 0.25);
 }
+
+/* --- Tugmalar (Bootstrap 5.3 da tugma ranglari alohida o'zgaruvchilarda) --- */
+
+.btn-primary {
+    --bs-btn-bg: var(--qdu-navy);
+    --bs-btn-border-color: var(--qdu-navy);
+    --bs-btn-hover-bg: var(--qdu-navy-600);
+    --bs-btn-hover-border-color: var(--qdu-navy-600);
+    --bs-btn-active-bg: var(--qdu-navy-700);
+    --bs-btn-active-border-color: var(--qdu-navy-700);
+    --bs-btn-disabled-bg: var(--qdu-navy);
+    --bs-btn-disabled-border-color: var(--qdu-navy);
+    --bs-btn-focus-shadow-rgb: 14, 74, 102;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--qdu-navy);
+    --bs-btn-border-color: var(--qdu-navy);
+    --bs-btn-hover-bg: var(--qdu-navy);
+    --bs-btn-hover-border-color: var(--qdu-navy);
+    --bs-btn-active-bg: var(--qdu-navy-600);
+    --bs-btn-active-border-color: var(--qdu-navy-600);
+    --bs-btn-disabled-color: var(--qdu-navy);
+    --bs-btn-disabled-border-color: var(--qdu-navy);
+    --bs-btn-focus-shadow-rgb: 14, 74, 102;
+}
+
+.btn-success {
+    --bs-btn-bg: var(--qdu-yashil);
+    --bs-btn-border-color: var(--qdu-yashil);
+    --bs-btn-hover-bg: var(--qdu-yashil-600);
+    --bs-btn-hover-border-color: var(--qdu-yashil-600);
+    --bs-btn-active-bg: var(--qdu-yashil-700);
+    --bs-btn-active-border-color: var(--qdu-yashil-700);
+    --bs-btn-disabled-bg: var(--qdu-yashil);
+    --bs-btn-disabled-border-color: var(--qdu-yashil);
+    --bs-btn-focus-shadow-rgb: 46, 155, 87;
+}
+
+.btn-outline-success {
+    --bs-btn-color: var(--qdu-yashil-600);
+    --bs-btn-border-color: var(--qdu-yashil);
+    --bs-btn-hover-bg: var(--qdu-yashil);
+    --bs-btn-hover-border-color: var(--qdu-yashil);
+    --bs-btn-active-bg: var(--qdu-yashil-600);
+    --bs-btn-active-border-color: var(--qdu-yashil-600);
+    --bs-btn-focus-shadow-rgb: 46, 155, 87;
+}
+
+/* --- Navbar: navy fon va logotip rangidagi gradient chiziq --- */
+
+.navbar.bg-primary {
+    background-color: var(--qdu-navy) !important;
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, var(--qdu-yashil), var(--qdu-kok)) 1;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-logo {
+    width: 36px;
+    height: 36px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 2px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.brand-nomi {
+    line-height: 1.1;
+}
+
+.brand-nomi small {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 400;
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+}
+
+.navbar-dark .nav-link.active {
+    border-bottom: 2px solid var(--qdu-yashil);
+}
+
+/* --- Kartalar va sarlavhalar --- */
 
 .card {
     transition: box-shadow 0.15s ease-in-out;
 }
 
 .card:hover {
-    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0.25rem 0.75rem rgba(14, 74, 102, 0.12);
 }
 
-/* QR yorliqlarni chop etish */
+.table > thead.table-light th {
+    color: var(--qdu-navy);
+}
+
+/* Kirish sahifasidagi logotip */
+.kirish-logo {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+}
+
+/* Bosh sahifadagi salomlashuv bo'limi */
+.hero {
+    background: linear-gradient(135deg, var(--qdu-yashil) 0%, var(--qdu-navy) 65%);
+    color: #fff;
+}
+
+.hero code {
+    color: #d7f0e2;
+}
+
+footer .footer-brend {
+    color: var(--qdu-navy);
+    font-weight: 600;
+}
+
+/* --- QR yorliqlarni chop etish --- */
+
 @media print {
     .navbar,
     footer,

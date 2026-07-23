@@ -7,11 +7,13 @@
         @page { size: A4 portrait; margin: 1.6cm 1.4cm; }
         body { font-family: Helvetica, Arial, sans-serif; font-size: 9pt; color: #212529; }
         h1 { font-size: 15pt; margin: 0 0 2px 0; }
-        h2 { font-size: 10.5pt; margin: 16px 0 6px 0; border-bottom: 1px solid #dee2e6;
-             padding-bottom: 3px; }
+        h2 { font-size: 10.5pt; margin: 16px 0 6px 0; color: #0e4a66;
+             border-bottom: 1px solid #2e9b57; padding-bottom: 3px; }
         .muted { color: #6c757d; font-size: 8pt; }
+        .sarlavha-jadval { border: none; margin-bottom: 4px; }
+        .sarlavha-jadval td { border: none; vertical-align: middle; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
-        th { background-color: #0d6efd; color: #fff; font-size: 8pt; padding: 4px 5px;
+        th { background-color: #0e4a66; color: #fff; font-size: 8pt; padding: 4px 5px;
              text-align: left; }
         td { padding: 3px 5px; border-bottom: 0.5px solid #dee2e6; font-size: 8.5pt; }
         .center { text-align: center; }
@@ -25,14 +27,25 @@
 <body>
 
 <div class="footer">
-    Elektron Baza — universitet qurilmalari ta'mirlash tizimi ·
+    Qo'qon davlat universiteti · Elektron Baza ·
     {{ tayyorlandi|date:'d.m.Y H:i' }} · <pdf:pagenumber>-bet
 </div>
 
-<h1>Ta'mirlash hisoboti</h1>
-<div class="muted">
-    Davr: {{ davr.nomi }} · Tayyorlandi: {{ tayyorlandi|date:'d.m.Y H:i' }} · {{ tayyorlagan }}
-</div>
+<table class="sarlavha-jadval">
+    <tr>
+        {% if logo_yoli %}
+            <td style="width: 62px;"><img src="{{ logo_yoli }}" style="width: 54px;"></td>
+        {% endif %}
+        <td>
+            <div class="muted" style="text-transform: uppercase;">Qo'qon davlat universiteti</div>
+            <h1>Ta'mirlash hisoboti</h1>
+            <div class="muted">
+                Davr: {{ davr.nomi }} · Tayyorlandi: {{ tayyorlandi|date:'d.m.Y H:i' }} ·
+                {{ tayyorlagan }}
+            </div>
+        </td>
+    </tr>
+</table>
 
 <h2>Umumiy ko'rsatkichlar</h2>
 <table class="kv">

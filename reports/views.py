@@ -1,7 +1,8 @@
-import json
 from datetime import date, timedelta
 from io import BytesIO
+from pathlib import Path
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -54,7 +55,8 @@ def hisobot(request):
         'dan': davr.boshlanish.isoformat(),
         'gacha': davr.tugash.isoformat(),
         'tez_havolalar': _tez_havolalar(),
-        'diagramma': json.dumps({
+        # `json_script` shablon filtri o'zi JSON'ga o'girib beradi
+        'diagramma': {
             'oylar': [o['nomi'] for o in oylar],
             'kelgan': [o['kelgan'] for o in oylar],
             'tugatilgan': [o['tugatilgan'] for o in oylar],
@@ -64,7 +66,7 @@ def hisobot(request):
                              for u in malumot['ustalar'] if u.tamirlar_soni],
             'manba_nomlari': [m['nomi'] for m in malumot['manbalar']],
             'manba_soni': [m['soni'] for m in malumot['manbalar']],
-        }),
+        },
     })
 
 
@@ -90,10 +92,14 @@ def hisobot_pdf(request):
     davr = _davr(request)
     malumot = hisobot_moduli.yig(davr)
 
+    # xhtml2pdf statik fayllarni faqat to'liq yo'l bo'yicha topadi
+    logo = Path(settings.BASE_DIR) / 'static' / 'img' / 'logo.png'
+
     html = render_to_string('reports/hisobot_pdf.html', {
         **malumot,
         'tayyorlandi': timezone.localtime(),
         'tayyorlagan': request.user.get_full_name() or request.user.username,
+        'logo_yoli': logo.as_uri() if logo.exists() else '',
     })
 
     bufer = BytesIO()
