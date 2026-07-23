@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 
 class Bolim(models.Model):
@@ -67,8 +68,6 @@ class Qurilma(models.Model):
     )
     holati = models.CharField('Holati', max_length=20, choices=Holat.choices, default=Holat.ISHLAMOQDA)
     olingan_sana = models.DateField('Olingan sana', null=True, blank=True)
-    # QR-kod rasmi 6-bosqichda avtomatik generatsiya qilinadi
-    qr_kod = models.ImageField('QR-kod', upload_to='qr_kodlar/', blank=True)
 
     class Meta:
         verbose_name = 'Qurilma'
@@ -77,3 +76,14 @@ class Qurilma(models.Model):
 
     def __str__(self):
         return f'{self.inventar_raqami} — {self.get_turi_display()} {self.modeli}'.strip()
+
+    def get_absolute_url(self):
+        return reverse('qurilma_batafsil', args=[self.pk])
+
+    @property
+    def holat_rangi(self):
+        return {
+            self.Holat.ISHLAMOQDA: 'success',
+            self.Holat.TAMIRDA: 'warning',
+            self.Holat.YAROQSIZ: 'danger',
+        }.get(self.holati, 'secondary')

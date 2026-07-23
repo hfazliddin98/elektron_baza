@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ qurilma.inventar_raqami }} — Elektron Baza{% endblock %}
+
+{% block content %}
+<nav class="mb-3">
+    <a href="{% url 'qurilma_royxati' %}" class="text-decoration-none small">
+        <i class="bi bi-arrow-left"></i> Qurilmalar ro'yxatiga
+    </a>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-wrap align-items-start justify-content-between mb-3">
+                    <div>
+                        <h1 class="h4 mb-1">{{ qurilma.inventar_raqami }}</h1>
+                        <p class="text-muted mb-0">
+                            {{ qurilma.get_turi_display }}{% if qurilma.modeli %} — {{ qurilma.modeli }}{% endif %}
+                        </p>
+                    </div>
+                    <span class="badge text-bg-{{ qurilma.holat_rangi }} fs-6">
+                        {{ qurilma.get_holati_display }}
+                    </span>
+                </div>
+
+                <dl class="row mb-0 small">
+                    <dt class="col-sm-4 text-muted fw-normal">Seriya raqami</dt>
+                    <dd class="col-sm-8">{{ qurilma.seriya_raqami|default:'—' }}</dd>
+
+                    <dt class="col-sm-4 text-muted fw-normal">Bo'limi</dt>
+                    <dd class="col-sm-8">
+                        {{ qurilma.bolim.nomi }}
+                        {% if qurilma.bolim.bino or qurilma.bolim.xona %}
+                            <span class="text-muted">({{ qurilma.bolim.bino }} {{ qurilma.bolim.xona }})</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4 text-muted fw-normal">Biriktirilgan xodim</dt>
+                    <dd class="col-sm-8">{{ qurilma.xodim.fio|default:'— (biriktirilmagan)' }}</dd>
+
+                    <dt class="col-sm-4 text-muted fw-normal">Olingan sana</dt>
+                    <dd class="col-sm-8">{{ qurilma.olingan_sana|date:'d.m.Y'|default:'—' }}</dd>
+                </dl>
+            </div>
+
+            {% if user.is_admin or user.is_operator %}
+                <div class="card-footer bg-white d-flex flex-wrap gap-2">
+                    <a href="{% url 'qurilma_tahrirlash' qurilma.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Tahrirlash
+                    </a>
+                    {% if qurilma.holati == 'yaroqsiz' %}
+                        <form method="post" action="{% url 'qurilma_holat' qurilma.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="holati" value="ishlamoqda">
+                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-arrow-counterclockwise"></i> Ishlaydiganlar qatoriga qaytarish
+                            </button>
+                        </form>
+                    {% else %}
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal" data-bs-target="#yaroqsizModal">
+                            <i class="bi bi-x-octagon"></i> Yaroqsizga chiqarish
+                        </button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <h2 class="h6 text-uppercase text-muted mb-3">Ta'mirlash tarixi ({{ tamirlar|length }})</h2>
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sana</th>
+                            <th>Muammo</th>
+                            <th>Turi</th>
+                            <th>Usta</th>
+                            <th>Holat</th>
+                            <th>Baho</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tamir in tamirlar %}
+                            <tr>
+                                <td class="text-nowrap small">{{ tamir.qabul_sana|date:'d.m.Y' }}</td>
+                                <td class="small">
+                                    {{ tamir.muammo_tavsifi|truncatechars:60 }}
+                                    {% if tamir.qayta_tamir %}
+                                        <span class="badge text-bg-danger">qayta ta'mir</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small">{{ tamir.get_turi_display }}</td>
+                                <td class="small">{{ tamir.usta.fio|default:'—' }}</td>
+                                <td><span class="badge text-bg-{{ tamir.holat_rangi }}">{{ tamir.holat_nomi }}</span></td>
+                                <td class="small">
+                                    {% if tamir.baho %}{{ tamir.baho }} <i class="bi bi-star-fill text-warning"></i>
+                                    {% else %}—{% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="6" class="text-center text-muted py-4">
+                                Bu qurilma hali ta'mirlanmagan.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h2 class="h6 text-uppercase text-muted mb-3">QR-kod</h2>
+                <img src="{% url 'qurilma_qr' qurilma.pk %}" alt="QR-kod"
+                     class="img-fluid border rounded" style="max-width: 220px;">
+                <p class="text-muted small mt-3 mb-0">
+                    Skanerlanganda shu qurilma sahifasi ochiladi.
+                    Yorliqni chop etib qurilmaga yopishtiring.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_admin or user.is_operator %}
+    <div class="modal fade" id="yaroqsizModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yaroqsizga chiqarish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">
+                        <strong>{{ qurilma.inventar_raqami }}</strong> qurilmasi yaroqsiz deb belgilanadi.
+                        Yozuv o'chirilmaydi — ta'mir tarixi saqlanib qoladi.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <form method="post" action="{% url 'qurilma_holat' qurilma.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="holati" value="yaroqsiz">
+                        <button type="submit" class="btn btn-danger">Ha, yaroqsizga chiqarish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

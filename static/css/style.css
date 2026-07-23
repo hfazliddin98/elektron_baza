@@ -11,3 +11,26 @@
 .card:hover {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
 }
+
+/* QR yorliqlarni chop etish */
+@media print {
+    .navbar,
+    footer,
+    .alert {
+        display: none !important;
+    }
+
+    main {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .qr-yorliqlar .border {
+        border-color: #999 !important;
+        break-inside: avoid;
+    }
+
+    .card:hover {
+        box-shadow: none;
+    }
+}

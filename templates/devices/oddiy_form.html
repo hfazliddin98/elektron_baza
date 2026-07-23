@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ sarlavha }} — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h5 mb-4">{{ sarlavha }}</h1>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include 'includes/form.html' %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                        <a href="{% url qaytish_url %}" class="btn btn-outline-secondary">Bekor qilish</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

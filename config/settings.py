@@ -8,6 +8,7 @@ Maxfiy sozlamalar .env faylidan o'qiladi (namuna: .env.example).
 import os
 from pathlib import Path
 
+from django.contrib.messages import constants as message_constants
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -137,6 +138,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
+
+# Bootstrap'da xato uslubi "danger" deb ataladi
+MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 
 
 # Telegram bot (10-bosqichda ishlatiladi)

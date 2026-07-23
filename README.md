@@ -61,6 +61,17 @@ Sayt: http://127.0.0.1:8000/ · Admin panel: http://127.0.0.1:8000/admin/
 View'ga ruxsat qo'yish: `@rol_kerak(ADMIN, OPERATOR)` (`accounts/permissions.py`).
 Muhim amallarni tarixga yozish: `amal_yoz(user, AmalTarixi.Amal.TASDIQLASH, obyekt=..., request=request)`.
 
+## Qurilmalar moduli
+
+- **Reestr:** `/qurilmalar/` — qidiruv (inventar raqam, model, seriya), turi/bo'lim/holat bo'yicha filtr.
+  Xodim bu sahifada faqat o'ziga va o'z bo'limiga tegishli qurilmalarni ko'radi.
+- **Excel import:** `/qurilmalar/import/` va `/xodimlar/import/` (admin uchun).
+  Avval shablonni yuklab oling — ustunlar mos kelmasa fayl qabul qilinmaydi.
+  Xato qatorlar raqami bilan ko'rsatiladi, qolganlari import qilinadi;
+  tuzatilgan faylni qayta yuklash xavfsiz (mavjud yozuvlar takrorlanmaydi).
+- **QR-kod:** har qurilma sahifasida QR bor; `/qurilmalar/qr-chop/` — filtrlangan
+  yorliqlarni chop etish sahifasi. Skanerlanganda qurilma sahifasi ochiladi.
+
 ## Testlar
 
 ```bash

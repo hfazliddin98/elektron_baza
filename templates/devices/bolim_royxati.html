@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Bo'limlar — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">Bo'limlar <span class="text-muted fs-6">({{ bolimlar|length }})</span></h1>
+    <a href="{% url 'bolim_yangi' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Yangi bo'lim
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nomi</th>
+                    <th>Bino</th>
+                    <th>Xona</th>
+                    <th class="text-center">Xodimlar</th>
+                    <th class="text-center">Qurilmalar</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bolim in bolimlar %}
+                    <tr>
+                        <td class="fw-semibold">{{ bolim.nomi }}</td>
+                        <td class="small">{{ bolim.bino|default:'—' }}</td>
+                        <td class="small">{{ bolim.xona|default:'—' }}</td>
+                        <td class="text-center">{{ bolim.xodimlar_soni }}</td>
+                        <td class="text-center">{{ bolim.qurilmalar_soni }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'bolim_tahrirlash' bolim.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">Bo'lim qo'shilmagan.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

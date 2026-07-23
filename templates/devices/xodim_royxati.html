@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Xodimlar — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">Xodimlar <span class="text-muted fs-6">({{ jami }})</span></h1>
+    <div class="d-flex gap-2">
+        <a href="{% url 'xodim_yangi' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> Yangi xodim
+        </a>
+        <a href="{% url 'xodim_import' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-file-earmark-excel"></i> Excel import
+        </a>
+    </div>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-5">
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="F.I.Sh., lavozim yoki telefon">
+    </div>
+    <div class="col-md-3">
+        <select name="bolim" class="form-select">
+            <option value="">— Barcha bo'limlar —</option>
+            {% for b in bolimlar %}
+                <option value="{{ b.pk }}" {% if b.pk|stringformat:'s' == bolim %}selected{% endif %}>{{ b.nomi }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-auto">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+        <a href="{% url 'xodim_royxati' %}" class="btn btn-outline-secondary">Tozalash</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>F.I.Sh.</th>
+                    <th>Bo'limi</th>
+                    <th>Lavozimi</th>
+                    <th>Telefon</th>
+                    <th>Login</th>
+                    <th>Telegram</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for xodim in sahifa %}
+                    <tr>
+                        <td class="fw-semibold">{{ xodim.fio }}</td>
+                        <td class="small">{{ xodim.bolim.nomi }}</td>
+                        <td class="small">{{ xodim.lavozimi|default:'—' }}</td>
+                        <td class="small">{{ xodim.telefon|default:'—' }}</td>
+                        <td class="small">{{ xodim.user.username|default:'—' }}</td>
+                        <td class="small">
+                            {% if xodim.telegram_id %}
+                                <i class="bi bi-check-circle text-success"></i>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'xodim_tahrirlash' xodim.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">Xodim topilmadi.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include 'includes/sahifalash.html' %}
+{% endblock %}

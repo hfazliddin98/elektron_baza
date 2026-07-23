@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}QR yorliqlar — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-print-none">
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+        <h1 class="h4 mb-0">QR yorliqlar <span class="text-muted fs-6">({{ qurilmalar|length }} ta)</span></h1>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
+                <i class="bi bi-printer"></i> Chop etish
+            </button>
+            <a href="{% url 'qurilma_royxati' %}" class="btn btn-outline-secondary btn-sm">Qaytish</a>
+        </div>
+    </div>
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-4">
+            <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm"
+                   placeholder="Inventar raqam yoki model">
+        </div>
+        <div class="col-md-2">
+            <select name="turi" class="form-select form-select-sm">
+                <option value="">— Barcha turlar —</option>
+                {% for qiymat, nom in turlar %}
+                    <option value="{{ qiymat }}" {% if qiymat == turi %}selected{% endif %}>{{ nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="bolim" class="form-select form-select-sm">
+                <option value="">— Barcha bo'limlar —</option>
+                {% for b in bolimlar %}
+                    <option value="{{ b.pk }}" {% if b.pk|stringformat:'s' == bolim %}selected{% endif %}>{{ b.nomi }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-sm btn-primary">Filtrlash</button>
+        </div>
+    </form>
+
+    {% if kesildi %}
+        <div class="alert alert-warning py-2 small">
+            Jami {{ jami }} ta qurilma topildi, bir sahifada faqat birinchi {{ chegara }} tasi chiqarildi.
+            Qolganini chop etish uchun filtrdan foydalaning (masalan, bo'lim bo'yicha).
+        </div>
+    {% endif %}
+</div>
+
+<div class="row row-cols-2 row-cols-md-4 g-3 qr-yorliqlar">
+    {% for qurilma in qurilmalar %}
+        <div class="col">
+            <div class="border rounded text-center p-2 h-100">
+                <img src="{% url 'qurilma_qr' qurilma.pk %}" alt="QR" class="img-fluid" style="max-width: 120px;">
+                <div class="fw-semibold small mt-1">{{ qurilma.inventar_raqami }}</div>
+                <div class="text-muted" style="font-size: 0.7rem;">
+                    {{ qurilma.get_turi_display }}{% if qurilma.modeli %}<br>{{ qurilma.modeli|truncatechars:28 }}{% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center text-muted py-5">Qurilma topilmadi.</div>
+    {% endfor %}
+</div>
+{% endblock %}

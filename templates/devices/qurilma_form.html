@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if yangi %}Yangi qurilma{% else %}{{ qurilma.inventar_raqami }} — tahrirlash{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h5 mb-4">
+                    {% if yangi %}Yangi qurilma qo'shish{% else %}Qurilmani tahrirlash{% endif %}
+                </h1>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include 'includes/form.html' %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                        <a href="{% if qurilma %}{{ qurilma.get_absolute_url }}{% else %}{% url 'qurilma_royxati' %}{% endif %}"
+                           class="btn btn-outline-secondary">Bekor qilish</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

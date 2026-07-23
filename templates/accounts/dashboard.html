@@ -10,6 +10,26 @@
             Rolingiz: <span class="badge text-bg-primary">{{ user.get_rol_display }}</span>
         </p>
     </div>
+    <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+        {% if user.is_admin or user.is_operator or user.is_usta %}
+            <a href="{% url 'qurilma_royxati' %}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pc-display"></i> Qurilmalar
+            </a>
+        {% endif %}
+        {% if user.is_xodim %}
+            <a href="{% url 'qurilma_royxati' %}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pc-display"></i> Mening qurilmalarim
+            </a>
+        {% endif %}
+        {% if user.is_admin %}
+            <a href="{% url 'qurilma_import' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-file-earmark-excel"></i> Excel import
+            </a>
+            <a href="{% url 'qr_chop' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-qr-code"></i> QR yorliqlar
+            </a>
+        {% endif %}
+    </div>
 </div>
 
 {% if user.is_admin or user.is_operator %}

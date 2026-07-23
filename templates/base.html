@@ -24,10 +24,30 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Panel</a></li>
 
+                    {% if user.is_admin or user.is_operator or user.is_usta %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'qurilma_royxati' %} active{% endif %}"
+                               href="{% url 'qurilma_royxati' %}">Qurilmalar</a>
+                        </li>
+                    {% endif %}
+
                     {% if user.is_admin or user.is_operator %}
-                        <li class="nav-item"><a class="nav-link disabled" href="#">Qurilmalar</a></li>
                         <li class="nav-item"><a class="nav-link disabled" href="#">Murojaatlar</a></li>
                         <li class="nav-item"><a class="nav-link disabled" href="#">Ta'mirlar</a></li>
+                    {% endif %}
+
+                    {% if user.is_admin %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ma'lumotnoma</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'bolim_royxati' %}">Bo'limlar</a></li>
+                                <li><a class="dropdown-item" href="{% url 'xodim_royxati' %}">Xodimlar</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'qurilma_import' %}">Qurilmalarni import qilish</a></li>
+                                <li><a class="dropdown-item" href="{% url 'xodim_import' %}">Xodimlarni import qilish</a></li>
+                                <li><a class="dropdown-item" href="{% url 'qr_chop' %}">QR yorliqlarni chop etish</a></li>
+                            </ul>
+                        </li>
                     {% endif %}
 
                     {% if user.is_usta %}
@@ -36,6 +56,10 @@
                     {% endif %}
 
                     {% if user.is_xodim %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.resolver_match.url_name == 'qurilma_royxati' %} active{% endif %}"
+                               href="{% url 'qurilma_royxati' %}">Mening qurilmalarim</a>
+                        </li>
                         <li class="nav-item"><a class="nav-link disabled" href="#">Murojaat yuborish</a></li>
                         <li class="nav-item"><a class="nav-link disabled" href="#">Mening murojaatlarim</a></li>
                     {% endif %}

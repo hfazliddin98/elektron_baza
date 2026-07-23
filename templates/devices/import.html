@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ sarlavha }} — Excel import{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h1 class="h4 mb-0">{{ sarlavha }} — Excel import</h1>
+            <a href="{% url qaytish_url %}" class="btn btn-sm btn-outline-secondary">Ro'yxatga qaytish</a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="alert alert-light border small">
+                    <strong>Tartib:</strong>
+                    1) shablonni yuklab oling → 2) ma'lumotlarni to'ldiring → 3) faylni shu yerdan yuklang.
+                    Import qaytadan yuklashga chidamli: mavjud yozuvlar takrorlanmaydi.
+                    <div class="mt-2">
+                        <a href="{% url 'shablon' tur %}" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-download"></i> Shablonni yuklab olish (.xlsx)
+                        </a>
+                    </div>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% include 'includes/form.html' %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Yuklash va import qilish
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if natija %}
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h6 mb-3">Import natijasi</h2>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-4">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-4 fw-semibold text-success">{{ natija.yaratildi }}</div>
+                                <div class="small text-muted">yangi qo'shildi</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-4 fw-semibold text-primary">{{ natija.yangilandi }}</div>
+                                <div class="small text-muted">yangilandi</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-4 fw-semibold text-secondary">{{ natija.otkazildi }}</div>
+                                <div class="small text-muted">o'tkazib yuborildi</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if natija.yangi_bolimlar %}
+                        <div class="alert alert-info py-2 small">
+                            <strong>Yangi bo'limlar yaratildi:</strong>
+                            {{ natija.yangi_bolimlar|join:', ' }}.
+                            Xato yozilgan bo'lsa, bo'limlar ro'yxatidan tuzating.
+                        </div>
+                    {% endif %}
+
+                    {% if natija.ogohlantirishlar %}
+                        <div class="alert alert-warning py-2 small mb-3">
+                            <strong>Ogohlantirishlar:</strong>
+                            <ul class="mb-0 mt-1">
+                                {% for qator, xabar in natija.ogohlantirishlar %}
+                                    <li>{{ qator }}-qator: {{ xabar }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    {% if natija.xatolar %}
+                        <div class="alert alert-danger py-2 small mb-0">
+                            <strong>Xatolar ({{ natija.xatolar|length }}) — bu qatorlar import qilinmadi:</strong>
+                            <ul class="mb-0 mt-1">
+                                {% for qator, xabar in natija.xatolar %}
+                                    <li>{% if qator %}{{ qator }}-qator: {% endif %}{{ xabar }}</li>
+                                {% endfor %}
+                            </ul>
+                            <div class="mt-2">
+                                Faylni tuzatib, qaytadan yuklang — allaqachon kiritilganlar takrorlanmaydi.
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success py-2 small mb-0">
+                            Barcha qatorlar xatosiz o'qildi.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

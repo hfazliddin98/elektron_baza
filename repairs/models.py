@@ -92,6 +92,30 @@ class TamirYozuvi(models.Model):
     def __str__(self):
         return f'#{self.pk} — {self.qurilma}'
 
+    @property
+    def holat_rangi(self):
+        if self.turi == self.Turi.OZI:
+            return {
+                self.Tasdiq.KUTILMOQDA: 'warning',
+                self.Tasdiq.TASDIQLANDI: 'success',
+                self.Tasdiq.RAD: 'danger',
+            }.get(self.tasdiq_holati, 'secondary')
+        return {
+            self.Holat.YANGI: 'warning',
+            self.Holat.QABUL: 'info',
+            self.Holat.TASHXIS: 'primary',
+            self.Holat.TAMIRDA: 'primary',
+            self.Holat.TAYYOR: 'success',
+            self.Holat.TOPSHIRILDI: 'secondary',
+            self.Holat.RAD: 'danger',
+        }.get(self.holat, 'secondary')
+
+    @property
+    def holat_nomi(self):
+        if self.turi == self.Turi.OZI:
+            return self.get_tasdiq_holati_display()
+        return self.get_holat_display()
+
     def save(self, *args, **kwargs):
         yangi_yozuv = self.pk is None
         eski_holat = eski_tasdiq = ''

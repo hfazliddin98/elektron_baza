@@ -23,7 +23,7 @@
 | 3 | Muhitni tayyorlash | 2–3 kun | Django skelet loyiha | ✅ Tugagan |
 | 4 | Modellar va admin panel | 1 hafta | Baza jadvallari, admin | ✅ Tugagan |
 | 5 | Autentifikatsiya va rollar | 1 hafta | Login, 5 xil rol | ✅ Tugagan |
-| 6 | Qurilmalar moduli | 1 hafta | Reestr + Excel import + QR-kod | ⬜ Boshlanmagan |
+| 6 | Qurilmalar moduli | 1 hafta | Reestr + Excel import + QR-kod | ✅ Tugagan |
 | 7 | Murojaatlar moduli | 1 hafta | Elektron murojaat + o'zi ta'mirlash + tasdiqlash | ⬜ Boshlanmagan |
 | 8 | Ta'mirlash moduli | 2 hafta | Navbat, workflow, SLA | ⬜ Boshlanmagan |
 | 🚀 | **MVP — birinchi ishga tushirish** | 8-bosqichdan keyin | Tizim real foydalanishda | ⬜ Boshlanmagan |
@@ -176,19 +176,24 @@ Status belgilari: ⬜ Boshlanmagan · 🟨 Jarayonda · ✅ Tugagan
 **Maqsad:** universitetdagi barcha elektron qurilmalarni ro'yxatga olish.
 
 **Vazifalar:**
-- [ ] Qurilmalar ro'yxati: jadval ko'rinishida, sahifalash bilan
-- [ ] Filtr: turi, bo'limi, holati bo'yicha; inventar raqam bo'yicha qidiruv
-- [ ] Yangi qurilma qo'shish formasi (validatsiya bilan)
-- [ ] **Excel'dan ommaviy import:** qurilmalar va xodimlar ro'yxatini tayyor shablon orqali yuklash (openpyxl) — yuzlab yozuvni qo'lda kiritmaslik uchun
-- [ ] Import xatolarini tushunarli ko'rsatish (qaysi qator, nima sabab)
-- [ ] **QR-kod:** har qurilma uchun avtomatik QR generatsiya (`qrcode` kutubxonasi), chop etish uchun ko'rinish; skanerlashda qurilma sahifasi va tayyor murojaat formasi ochiladi
-- [ ] Qurilma sahifasi: ma'lumotlari + **barcha ta'mir tarixi** (usta ta'mirlari ham, o'zi ta'mirlanganlari ham)
-- [ ] Tahrirlash / yaroqsizga chiqarish (o'chirmasdan, holatini o'zgartirish)
-- [ ] Bo'limlar va xodimlar uchun CRUD sahifalari
+- [x] Qurilmalar ro'yxati: jadval ko'rinishida, sahifalash bilan (25 tadan)
+- [x] Filtr: turi, bo'limi, holati bo'yicha; inventar raqam / model / seriya raqami bo'yicha qidiruv
+- [x] Yangi qurilma qo'shish formasi (validatsiya bilan)
+- [x] **Excel'dan ommaviy import:** qurilmalar va xodimlar uchun alohida shablon (yuklab olish tugmasi bilan); bo'limlar avtomatik yaratiladi va hisobotda ko'rsatiladi; qayta yuklashga chidamli (mavjudlar o'tkazib yuboriladi yoki «yangilash» belgilansa yangilanadi)
+- [x] Import xatolarini tushunarli ko'rsatish — har xato qator raqami va sababi bilan; ogohlantirishlar alohida (masalan, topilmagan xodim)
+- [x] **QR-kod:** har qurilma uchun QR (`/qurilmalar/<id>/qr.png`), qurilma sahifasida ko'rinadi; filtrlangan yorliqlarni chop etish sahifasi (`@media print` bilan)
+- [x] Qurilma sahifasi: ma'lumotlari + **barcha ta'mir tarixi** (usta ta'mirlari ham, o'zi ta'mirlanganlari ham, qayta ta'mir belgisi bilan)
+- [x] Tahrirlash / yaroqsizga chiqarish (o'chirmasdan, tasdiqlash oynasi bilan)
+- [x] Bo'limlar va xodimlar uchun CRUD sahifalari
+- [x] Rollar: xodim faqat o'ziga va o'z bo'limiga tegishli qurilmalarni ko'radi; rahbariyat reestrga kirmaydi; import faqat admin uchun
+- [x] Testlar: 20 ta test (ruxsatlar, CRUD, QR, Excel import va xatolari)
 
 **Natija:** qurilmalar reestri (import va QR bilan).
 
 **Tugash mezoni:** Excel'dagi mavjud ro'yxat 10 daqiqada tizimga yuklanadi; har qurilmaning QR-kodini chop etish mumkin.
+
+> **Eslatma:** QR skanerlanganda hozircha qurilma sahifasi ochiladi. Murojaat formasi
+> 7-bosqichda qurilgach, shu sahifaga «Ta'mirga murojaat yuborish» tugmasi qo'shiladi.
 
 ---
 

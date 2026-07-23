@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ sarlavha }} — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">{{ sarlavha }} <span class="text-muted fs-6">({{ jami }})</span></h1>
+    {% if user.is_admin or user.is_operator %}
+        <div class="d-flex gap-2">
+            <a href="{% url 'qurilma_yangi' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Yangi qurilma
+            </a>
+            <a href="{% url 'qr_chop' %}?{{ sorov|slice:'1:' }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-qr-code"></i> QR chop etish
+            </a>
+            {% if user.is_admin %}
+                <a href="{% url 'qurilma_import' %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-file-earmark-excel"></i> Excel import
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="Inventar raqam, model yoki seriya raqami">
+    </div>
+    <div class="col-md-2">
+        <select name="turi" class="form-select">
+            <option value="">— Barcha turlar —</option>
+            {% for qiymat, nom in turlar %}
+                <option value="{{ qiymat }}" {% if qiymat == turi %}selected{% endif %}>{{ nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="bolim" class="form-select">
+            <option value="">— Barcha bo'limlar —</option>
+            {% for b in bolimlar %}
+                <option value="{{ b.pk }}" {% if b.pk|stringformat:'s' == bolim %}selected{% endif %}>{{ b.nomi }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="holati" class="form-select">
+            <option value="">— Barcha holatlar —</option>
+            {% for qiymat, nom in holatlar %}
+                <option value="{{ qiymat }}" {% if qiymat == holati %}selected{% endif %}>{{ nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-auto">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+        <a href="{% url 'qurilma_royxati' %}" class="btn btn-outline-secondary">Tozalash</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Inventar raqami</th>
+                    <th>Turi</th>
+                    <th>Modeli</th>
+                    <th>Bo'limi</th>
+                    <th>Xodim</th>
+                    <th>Holati</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for qurilma in sahifa %}
+                    <tr>
+                        <td><a href="{{ qurilma.get_absolute_url }}" class="fw-semibold text-decoration-none">
+                            {{ qurilma.inventar_raqami }}</a></td>
+                        <td>{{ qurilma.get_turi_display }}</td>
+                        <td class="small">{{ qurilma.modeli|default:'—' }}</td>
+                        <td class="small">{{ qurilma.bolim.nomi }}</td>
+                        <td class="small">{{ qurilma.xodim.fio|default:'—' }}</td>
+                        <td>
+                            <span class="badge text-bg-{{ qurilma.holat_rangi }}">
+                                {{ qurilma.get_holati_display }}
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">Qurilma topilmadi.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include 'includes/sahifalash.html' %}
+{% endblock %}
