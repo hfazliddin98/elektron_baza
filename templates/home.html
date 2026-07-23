@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Bosh sahifa — Elektron Baza{% endblock %}
+
+{% block content %}
+<div class="p-4 p-md-5 mb-4 rounded-3 bg-white border">
+    <h1 class="display-6 fw-bold">Elektron Baza</h1>
+    <p class="col-md-9 lead mb-0">
+        Universitet elektron qurilmalarini ro'yxatga olish va ta'mirlash jarayonini
+        boshqarish tizimi. Loyiha skeleti tayyor — modullar bosqichma-bosqich qo'shiladi
+        (<code>ETAPLAR.md</code> ga qarang).
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-pc-display text-primary"></i> Qurilmalar</h5>
+                <p class="card-text small text-muted">Reestr, Excel import, QR-kodlar.</p>
+                <span class="badge text-bg-secondary">6-bosqichda</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-envelope-paper text-primary"></i> Murojaatlar</h5>
+                <p class="card-text small text-muted">Elektron murojaat, o'zi ta'mirlash, tasdiqlash.</p>
+                <span class="badge text-bg-secondary">7-bosqichda</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-tools text-primary"></i> Ta'mirlar</h5>
+                <p class="card-text small text-muted">Navbat, workflow, SLA nazorati.</p>
+                <span class="badge text-bg-secondary">8-bosqichda</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-graph-up text-primary"></i> Hisobotlar</h5>
+                <p class="card-text small text-muted">Oylik/yillik, reyting, Excel/PDF.</p>
+                <span class="badge text-bg-secondary">11-bosqichda</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual muhit
+venv/
+.venv/
+
+# Maxfiy sozlamalar
+.env
+
+# Baza va media
+db.sqlite3
+/media/
+
+# Yig'ilgan static fayllar
+/staticfiles/
+
+# IDE
+.vscode/
+.idea/
+
+# Loglar
+*.log
